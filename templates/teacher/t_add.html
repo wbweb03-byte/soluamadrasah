@@ -1,0 +1,224 @@
+<!-- templates/teacher_form.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if form.instance.pk %}Edit Teacher{% else %}Add New Teacher{% endif %}
+{% endblock %}
+
+{% block extra_head %}
+    
+    <style>
+        /* Override Bootstrap classes that come from Django widgets */
+        input.form-control, select.form-control, textarea.form-control,
+        input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+        select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: #1f2937;
+            background-color: #fff;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        /* File input styling */
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        input[type="file"]::file-selector-button {
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: #eef2ff;
+            color: #4f46e5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #e0e7ff;
+        }
+
+        /* Toggle switch (pure CSS, no JS) */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 3rem;
+            height: 1.5rem;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 1.5rem;
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 1.2rem;
+            width: 1.2rem;
+            left: 0.15rem;
+            bottom: 0.15rem;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        input:checked + .toggle-slider {
+            background-color: #4f46e5;
+        }
+        input:checked + .toggle-slider:before {
+            transform: translateX(1.5rem);
+        }
+
+        /* Error messages */
+        .errorlist {
+            list-style: none;
+            margin-top: 0.25rem;
+            padding-left: 0;
+        }
+        .errorlist li {
+            color: #dc2626;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div class="max-w-4xl w-full">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-indigo-700 to-purple-700 px-6 py-8 sm:px-10">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3">
+                    <i class="fas {% if form.instance.pk %}fa-edit{% else %}fa-chalkboard-user{% endif %} text-3xl"></i>
+                    {% if form.instance.pk %}Edit Teacher Profile{% else %}Create New Teacher{% endif %}
+                </h2>
+                <p class="text-indigo-100 mt-2 flex items-center gap-2">
+                    <i class="fas fa-info-circle"></i>
+                    Fill in the details below. All fields are required unless noted.
+                </p>
+            </div>
+
+            <!-- Form body -->
+            <div class="px-6 py-8 sm:p-10">
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+
+                    <!-- Row: Name + Position -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="{{ form.name.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-1">
+                                <i class="fas fa-user-graduate text-indigo-500 w-5"></i> Full Name
+                                {% if form.name.field.required %}<span class="text-red-500">*</span>{% endif %}
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.help_text %}<p class="text-xs text-gray-500 mt-1">{{ form.name.help_text }}</p>{% endif %}
+                            {{ form.name.errors }}
+                        </div>
+                        <div>
+                            <label for="{{ form.position.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-1">
+                                <i class="fas fa-briefcase text-indigo-500 w-5"></i> Position
+                                {% if form.position.field.required %}<span class="text-red-500">*</span>{% endif %}
+                            </label>
+                            {{ form.position }}
+                            {{ form.position.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Row: Qualification + Contact -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="{{ form.qualification.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-1">
+                                <i class="fas fa-graduation-cap text-indigo-500 w-5"></i> Qualification
+                                {% if form.qualification.field.required %}<span class="text-red-500">*</span>{% endif %}
+                            </label>
+                            {{ form.qualification }}
+                            {{ form.qualification.errors }}
+                        </div>
+                        <div>
+                            <label for="{{ form.contact.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-1">
+                                <i class="fas fa-phone-alt text-indigo-500 w-5"></i> Contact Number
+                                {% if form.contact.field.required %}<span class="text-red-500">*</span>{% endif %}
+                            </label>
+                            {{ form.contact }}
+                            {{ form.contact.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Profile Image -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            <i class="fas fa-image text-indigo-500 w-5"></i> Profile Image
+                        </label>
+                        {{ form.img }}
+                        {% if form.img.help_text %}<p class="text-xs text-gray-500 mt-1">{{ form.img.help_text }}</p>{% endif %}
+                        {{ form.img.errors }}
+                    </div>
+
+                    <!-- Documents -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            <i class="fas fa-file-pdf text-indigo-500 w-5"></i> Documents (CV, certificates)
+                        </label>
+                        {{ form.documents }}
+                        {{ form.documents.errors }}
+                    </div>
+
+                    <!-- Active status (toggle switch) -->
+                    <div class="flex flex-wrap items-center justify-between gap-4 border-t border-gray-200 pt-6">
+                        <div class="flex items-center gap-3">
+                            <label class="toggle-switch">
+                                {{ form.is_active }}
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="{{ form.is_active.id_for_label }}" class="font-medium text-gray-700 cursor-pointer">
+                                <i class="fas fa-power-off text-indigo-500"></i> Active Status
+                            </label>
+                        </div>
+                        <span class="text-sm text-gray-500">
+                            {% if form.is_active.value %}✅ Active and visible on website{% else %}⛔ Inactive (hidden){% endif %}
+                        </span>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4">
+                        <a href="{% url 'dashboard'%}" class="inline-flex justify-center items-center px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200 font-medium">
+                            <i class="fas fa-times mr-2"></i> Cancel
+                        </a>
+                        <button type="submit" class="inline-flex justify-center items-center px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 font-semibold shadow-md hover:shadow-lg">
+                            <i class="fas fa-save mr-2"></i>
+                            {% if form.instance.pk %}Update Teacher{% else %}Save Teacher{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "admin/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Card -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-700 to-blue-600 px-6 py-4">
+                <h4 class="text-xl font-semibold text-white tracking-tight">
+                    Add New Student
+                </h4>
+                <p class="text-blue-100 text-sm mt-1">
+                    Fill in the student details below
+                </p>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6">
+                <!-- Messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="mb-6 p-4 rounded-lg border-l-4 
+                            {% if message.tags == 'success' %}
+                                bg-green-50 border-green-500 text-green-800
+                            {% elif message.tags == 'error' %}
+                                bg-red-50 border-red-500 text-red-800
+                            {% elif message.tags == 'warning' %}
+                                bg-yellow-50 border-yellow-500 text-yellow-800
+                            {% else %}
+                                bg-blue-50 border-blue-500 text-blue-800
+                            {% endif %}
+                        ">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Form -->
+                <form method="post" enctype="multipart/form-data" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% for field in students %}
+                        <div class="space-y-1">
+                            <!-- Label -->
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                                {{ field.label }}
+                                {% if field.field.required %}
+                                    <span class="text-red-500 ml-1">*</span>
+                                {% endif %}
+                            </label>
+
+                            <!-- Field with Tailwind classes using widget-tweaks -->
+                            {% if field.field.widget.input_type == 'checkbox' %}
+                                <div class="flex items-center">
+                                    {{ field|add_class:"h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" }}
+                                    <label for="{{ field.id_for_label }}" class="ml-2 text-sm text-gray-600">
+                                        {{ field.label }}
+                                    </label>
+                                </div>
+                            {% elif field.field.widget.input_type == 'select' %}
+                                {{ field|add_class:"mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                            {% else %}
+                                {{ field|add_class:"mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
+                            {% endif %}
+
+                            <!-- Help text -->
+                            {% if field.help_text %}
+                                <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+                            {% endif %}
+
+                            <!-- Errors -->
+                            {% for error in field.errors %}
+                                <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <!-- Buttons -->
+                    <div class="flex gap-3 pt-4">
+                        <button type="submit" 
+                                class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Submit
+                        </button>
+                        <a href="{% url 'student_list' %}" 
+                           class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

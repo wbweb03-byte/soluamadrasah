@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, print-scale: 100%">
+    <title>Invoice | FFFCO</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Optional: custom print styles -->
+    <style>
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+                margin: 0;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-shadow {
+                box-shadow: none !important;
+            }
+            .invoice-container {
+                margin: 0;
+                padding: 1rem;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <div class="min-h-screen p-4 md:p-8 no-print">
+        <div class="max-w-5xl mx-auto">
+            <!-- Print and action buttons (hidden when printing) -->
+            <div class="flex justify-end gap-3 mb-4 no-print">
+                <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Print / Save PDF
+                </button>
+                <button onclick="history.back()" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
+                    ← Back
+                </button>
+            </div>
+
+            <!-- Invoice Card -->
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden print-shadow">
+                <!-- Header with logo & title -->
+                <div class="bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-5 text-white">
+                    <div class="flex flex-wrap justify-between items-center">
+                        <div>
+                            <h1 class="text-2xl md:text-3xl font-bold tracking-tight">INVOICE</h1>
+                            {% comment %} <p class="text-gray-300 text-sm mt-1"># INV-2025-0042</p> {% endcomment %}
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xl font-semibold">FFF Corporation</div>
+                            <div class="text-gray-300 text-sm"></div>
+                            <div class="text-gray-300 text-sm">Bhagwangola | MSD | 742135</div>
+                            <div class="text-gray-300 text-sm">wb.web03@gmail.com | 9876543210</div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <!-- Date & Client Info -->
+                <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Invoice Date</h3>
+                            <p class="text-gray-800 font-medium">june 15, 2026</p>
+                            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mt-3">Billing Date</h3>
+                            <p class="text-gray-800 font-medium">june 15, 2026 </p>
+                        </div>
+                        <div>
+                            <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Bill To</h3>
+                            <p class="text-gray-800 font-semibold">Sloua Madrasah Darul Quran</p>
+                            <p class="text-gray-600">Solua | Baruipara|</p>
+                            <p class="text-gray-600">Hariharpara | MSD</p>
+                            <p class="text-gray-600">W.B | 742165</p>
+                            <p class="text-gray-600">soluamadrasah123@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Line Items Table -->
+                <div class="overflow-x-auto px-6 py-4">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Description</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Quantity</th>
+                                <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Unit Price</th>
+                                <th scope="col" class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-4 py-4 text-sm text-gray-800"> Full stack wesite for  Solua madrasah's Students Info. and manage</td>
+                                <td class="px-4 py-4 text-sm text-gray-600">1</td>
+                                <td class="px-4 py-4 text-sm text-gray-600">24000.00</td>
+                                <td class="px-4 py-4 text-sm text-gray-800 text-right font-medium">24000.00</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-4 text-sm text-gray-800">Account manage</td>
+                                <td class="px-4 py-4 text-sm text-gray-600">1</td>
+                                <td class="px-4 py-4 text-sm text-gray-600">6000.00</td>
+                                <td class="px-4 py-4 text-sm text-gray-800 text-right font-medium">6000.00</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary & Totals -->
+                <div class="px-6 py-5 border-t border-gray-200 bg-gray-50">
+                    <div class="flex flex-col items-end">
+                        <div class="w-full md:w-80 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Subtotal:</span>
+                                <span class="font-medium">30000.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Discount (13%):</span>
+                                <span class="font-medium text-green-600">-3900.00</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                {% comment %} <span class="text-gray-600">Tax (8.875%):</span>
+                                <span class="font-medium">$456.05</span> {% endcomment %}
+                            </div>
+                            <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-300">
+                                <span>Total :</span>
+                                <span class="text-blue-700">26100.00</span>
+                            </div>
+                            <p class="text-xs text-gray-500 text-right mt-1">Rupee</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment & Notes -->
+                <div class="px-6 py-5 grid md:grid-cols-2 gap-6 text-sm border-t border-gray-200">
+                    <div>
+                        {% comment %} <h4 class="font-semibold text-gray-800 mb-2">Payment Instructions</h4> {% endcomment %}
+                        {% comment %} <p class="text-gray-600">Bank: First National Bank</p>
+                        <p class="text-gray-600">Account Name: ACME Corporation</p>
+                        <p class="text-gray-600">Account Number: **** 1234 5678</p>
+                        <p class="text-gray-600">Routing: 021000021</p>
+                        <p class="text-gray-600 mt-2">Wire / ACH accepted. Include invoice # in reference.</p>
+                    </div> {% endcomment %}
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Notes / Terms</h4>
+                        <p class="text-gray-600">Payment due upon receipt. </p>
+                        <p class="text-gray-600 mt-2">Thank you for your business!</p>
+                    </div>
+                </div>
+
+                <!-- Footer (optional) -->
+                <div class=" px-6 py-4 text-center text-4xls text-black-500 border-t border-gray-200">
+                    Approved........................... <br>
+                    <br>
+                    Received...........................
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

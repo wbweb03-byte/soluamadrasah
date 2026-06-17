@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}Salua Madrasha | School Website{% endblock %}</title>
+    <!-- Tailwind CSS v4 + Google Fonts + Font Awesome -->
+        <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        body {
+            background: #fefaf5;
+        }
+        .transition-smooth {
+            transition: all 0.2s ease;
+        }
+        /* Custom active link style */
+        .nav-active {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+    <input type="checkbox" id="nav-toggle" class="peer hidden">
+
+    <header class="sticky top-0 z-50 bg-blue-900 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="h-16 flex items-center justify-between">
+                <!-- Logo + Brand -->
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-10 bg-white rounded-full flex items-center justify-center shadow-md">
+                        <i class="fas fa-quran text-blue-800 text-xl"></i>
+                    </div>
+                    <span class="text-white font-bold text-lg md:text-xl tracking-tight">Salua Madrasha</span>
+                </div>
+
+                <!-- Desktop Menu (Home, About, Academics, Blog, Contact, Admission) -->
+                <nav class="hidden md:flex gap-6 items-center">
+                    <a href="/" class="text-white/90 hover:text-amber-300 font-medium transition">Home</a>
+                    <a href="/about" class="text-white/90 hover:text-amber-300 font-medium transition">About</a>
+                    <a href="{% url 'dashboard' %}" class="text-white/90 hover:text-amber-300 font-medium transition">Academics</a>
+                    <a href="/blog" class="text-white/90 hover:text-amber-300 font-medium transition">Blog</a>
+                    <a href="/contact" class="text-white/90 hover:text-amber-300 font-medium transition">Contact</a>
+                    <a href="/admission" class="bg-amber-500 text-white px-5 py-1.5 rounded-full text-sm font-semibold hover:bg-amber-600 transition shadow">Admission</a>
+                </nav>
+
+                <!-- Hamburger (Mobile) -->
+                <label for="nav-toggle" class="md:hidden cursor-pointer text-white text-2xl">
+                    <i class="fas fa-bars"></i>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Sidebar Menu -->
+    <label for="nav-toggle" class="fixed inset-0 bg-black/60 z-40 opacity-0 invisible peer-checked:opacity-100 peer-checked:visible transition-all duration-300"></label>
+    <aside class="fixed top-0 right-0 h-full w-80 bg-white z-50 translate-x-full peer-checked:translate-x-0 transition-transform duration-300 shadow-2xl">
+        <div class="flex justify-between items-center p-5 border-b bg-blue-900 text-white">
+            <span class="font-bold text-xl">Menu</span>
+            <label for="nav-toggle" class="cursor-pointer text-2xl">&times;</label>
+        </div>
+        <nav class="flex flex-col p-5 gap-4">
+            <a href="/" class="py-2 border-b border-gray-100 font-medium hover:text-blue-700">Home</a>
+            <a href="/about" class="py-2 border-b border-gray-100 font-medium hover:text-blue-700">About</a>
+            <a href="{% url 'dashboard' %}" class="py-2 border-b border-gray-100 font-medium hover:text-blue-700">Academics</a>
+            <a href="/blog" class="py-2 border-b border-gray-100 font-medium hover:text-blue-700">Blog</a>
+            <a href="/contact" class="py-2 border-b border-gray-100 font-medium hover:text-blue-700">Contact</a>
+            <a href="/admission" class="bg-amber-500 text-white text-center py-2 rounded-full font-semibold mt-2">Admission 2026</a>
+        </nav>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT BLOCK ==================== -->
+    <main class="flex-grow">
+        {% block content %}
+        <!-- Default content (can be overridden) -->
+        <div class="max-w-7xl mx-auto px-4 py-12">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold text-gray-800">Welcome to Salua Madrasha</h1>
+                <p class="text-gray-600 mt-4">Extend this template by overriding the 'content' block.</p>
+            </div>
+        </div>
+        {% endblock %}
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-gray-900 text-white pt-12 pb-6 mt-12">
+        <div class="max-w-7xl mx-auto px-5 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- About Column -->
+            <div>
+                <div class="flex items-center gap-2 mb-4">
+                    <i class="fas fa-quran text-amber-400 text-2xl"></i>
+                    <span class="text-lg font-bold">Salua Madrasha</span>
+                </div>
+                <p class="text-gray-400 text-sm">Empowering young minds with Islamic values and modern education. Excellence since 1985.</p>
+                <div class="flex gap-4 mt-5 text-xl">
+                    <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="hover:text-amber-400 transition"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            <!-- Quick Links -->
+            <div>
+                <h4 class="font-bold text-lg mb-4 border-l-4 border-amber-500 pl-3">Quick Links</h4>
+                <ul class="space-y-2 text-gray-300 text-sm">
+                    <li><a href="/" class="hover:text-amber-400 transition">Home</a></li>
+                    <li><a href="/about" class="hover:text-amber-400 transition">About Us</a></li>
+                    <li><a href="/academics" class="hover:text-amber-400 transition">Academics</a></li>
+                    <li><a href="/blog" class="hover:text-amber-400 transition">Blog</a></li>
+                    <li><a href="/contact" class="hover:text-amber-400 transition">Contact</a></li>
+                    <li><a href="/admission" class="hover:text-amber-400 transition">Admission</a></li>
+                </ul>
+            </div>
+            <!-- Resources -->
+            <div>
+                <h4 class="font-bold text-lg mb-4 border-l-4 border-amber-500 pl-3">Resources</h4>
+                <ul class="space-y-2 text-gray-300 text-sm">
+                    <li><a href="#" class="hover:text-amber-400 transition">Student Portal</a></li>
+                    <li><a href="#" class="hover:text-amber-400 transition">E-Library</a></li>
+                    <li><a href="#" class="hover:text-amber-400 transition">Results</a></li>
+                    <li><a href="#" class="hover:text-amber-400 transition">Academic Calendar</a></li>
+                    <li><a href="#" class="hover:text-amber-400 transition">Fee Payment</a></li>
+                </ul>
+            </div>
+            <!-- Contact Info -->
+            <div>
+                <h4 class="font-bold text-lg mb-4 border-l-4 border-amber-500 pl-3">Contact Info</h4>
+                <div class="space-y-3 text-gray-300 text-sm">
+                    <p><i class="fas fa-map-marker-alt text-amber-400 w-5"></i> Salua, Hariharpara, Murshidabad, WB - 742148</p>
+                    <p><i class="fas fa-phone-alt text-amber-400 w-5"></i> +91 6291XXXX65</p>
+                    <p><i class="fas fa-envelope text-amber-400 w-5"></i> saluamadrasha@edu.in</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-800 mt-10 pt-6 text-center text-gray-400 text-sm">
+            <p>© 2026 Salua Madrasha Darul Quran. All Rights Reserved. Designed with <i class="fas fa-heart text-red-500"></i> by ISMAIL SK</p>
+        </div>
+    </footer>
+
+    <!-- Optional: mobile menu close when clicking a link -->
+    <script>
+        document.querySelectorAll('#nav-toggle + aside nav a, #nav-toggle + aside button').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('nav-toggle').checked = false;
+            });
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

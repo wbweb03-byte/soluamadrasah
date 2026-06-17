@@ -1,0 +1,67 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="{% static "css/output.css"%}"
+    <!-- Optional: simple icons (you can remove if not needed) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Header with login info and two buttons -->
+    <!-- Header with login info + Home/Dashboard buttons -->
+    <header class="bg-white/80 backdrop-blur-sm shadow-md sticky top-0 z-20 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-wrap justify-between items-center py-3 gap-3">
+                <!-- Brand + logo -->
+                <div class="flex items-center space-x-2">
+                    <div class="h-9 w-9 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fas fa-graduation-cap text-white text-lg"></i>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent">EduAdmin</span>
+                </div>
+                
+                <!-- Right: admin info + two buttons -->
+                <div class="flex items-center space-x-3 sm:space-x-5">
+                    <!-- admin avatar + name (hidden on xs) -->
+                    <div class="hidden sm:flex items-center space-x-2 bg-gray-100 px-3 py-1.5 rounded-full">
+                        <img src="https://ui-avatars.com/api/?background=4f46e5&color=fff&name=MA&bold=true&size=28" alt="Admin" class="w-7 h-7 rounded-full">
+                        <span class="text-sm font-semibold text-gray-700">M. Admin</span>
+                    </div>
+                    <!-- Home & Dashboard buttons (simple, no JS) -->
+                    <div class="flex space-x-2">
+                        <a href="/" class="inline-flex items-center px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-lg transition">
+                            <i class="fas fa-home mr-1.5"></i> Home
+                        </a>
+                        <a href="#" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm transition">
+                            <i class="fas fa-tachometer-alt mr-1.5"></i> Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {% block content %}
+        
+        {% endblock %}
+    </main>
+
+    <!-- Simple footer (optional) -->
+    <footer class="bg-white border-t border-gray-200 mt-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm text-gray-500">
+            &copy; {% now "Y" %} Admin Panel. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+
+</html>
