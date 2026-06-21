@@ -1,13 +1,64 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import TeacherCreate, NoticeCreate, BlogCreate, AuthorityCreate, StudentForm, StudentClassCreate
-from .models import Blog, Notice, Teacher, Authority, Student, StudentClass
+from django.forms import modelformset_factory
+from django.contrib import messages
+from .forms import( 
+    TeacherCreate,
+    NoticeCreate, 
+    BlogCreate, 
+    AuthorityCreate, 
+    StudentForm, 
+    StudentClassCreate,
+    GalleryImageForm,                  
+    LibraryCreate,
+    MadrasahDocumentForm,
+    PrincipalMassegeForm,
+    MadrasahInformationForm,
+    RoutineForm)
+from .models import (Blog, Notice, 
+    Teacher, Authority, 
+    Student, StudentClass, 
+    GalleryImage,
+    Library,
+    MadrasahDocuments,
+    PrincipalMessage,
+    MadrasahInformation,
+    Routine
+       )
 from django.contrib import messages
 from django.db.models import Q
+from django.views.decorators.cache import never_cache
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login,  logout 
 
 # Create your views here.
 
+# Login 
+def user_login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user:
+            login(request, user)
+            return redirect("dashboard")
+
+    return render(request, "admin/login.html")
+
+def user_logout(request):
+    logout(request)
+    return redirect("login_view")
 
 # dash board 
+def pre_dash(request):
+    return render(request, 'pre_dash.html')
+
+@login_required
 def dashboard(request):
     return render(request, 'admin/dashboard.html')
 
@@ -17,7 +68,7 @@ def blog_view(request):
     notices = Notice.objects.all()
     teachers = Teacher.objects.all()
     authority = Authority.objects.all()
-
+    images = GalleryImage.objects.order_by('-created_at') 
     context = {
         'principal':teachers.filter(position = "principal").first(),
         'assistance_principal':teachers.filter(position = "Assistant Principal").first(),
@@ -27,12 +78,14 @@ def blog_view(request):
         'secratory':authority.filter(position__iexact = "Secretary").first(),
         'abouts': abouts,
         'notices':notices,
+        'images':images,
         
     }
     return render(request, 'home/blog.html', context)
 
 
 # about add 
+@login_required
 def blog_add(request):
 
     if request.method == 'POST':
@@ -55,7 +108,7 @@ def blog_details(request, id):
     context = {'blog':blog}
     return render(request, 'blog/b_details.html', context )
 
-
+@login_required
 def blog_update(request, id):
     blogs = get_object_or_404(Blog, id=id)
     if request.method == 'POST':
@@ -71,7 +124,7 @@ def blog_update(request, id):
   
     return render(request, 'blog/b_add.html', context)
 
-
+@login_required
 def blog_delete(request, id):
     blog = get_object_or_404(Blog, id=id)
     
@@ -85,7 +138,7 @@ def blog_delete(request, id):
 
     # notice
 
-
+@login_required
 def notice_add(request):
     if request.method == 'POST':
         form = NoticeCreate(request.POST, request.FILES)
@@ -109,7 +162,7 @@ def notice_details(request, id):
     context = {'notice':notice}
     return render(request, 'notice/n_details.html', context )
 
-
+@login_required
 def notice_update(request, id):
     notice = get_object_or_404(Notice, id=id)
     if request.method == 'POST':
@@ -125,7 +178,7 @@ def notice_update(request, id):
   
     return render(request, 'notice/n_add.html', context) 
 
-
+@login_required
 def notice_delete(request, id):
     notice = get_object_or_404(Notice, id=id)
     
@@ -138,11 +191,12 @@ def notice_delete(request, id):
 
 
 #blog 
+
 def teacher_list(request):
     teachers = Teacher.objects.all()
     return render(request, 'teacher/t_list.html',{'teachers':teachers} )
 
-
+@login_required
 def teacher_add(request):
     if request.method == 'POST':
         form = TeacherCreate(request.POST, request.FILES)
@@ -159,7 +213,7 @@ def teacher_details(request, id):
     context = {'teacher':teacher}
     return render(request, 'teacher/t_details.html', context )
 
-
+@login_required
 def teacher_update(request, id):
     teacher = get_object_or_404(Teacher, id=id)
     if request.method == 'POST':
@@ -176,7 +230,7 @@ def teacher_update(request, id):
 
 # authority
 
-
+@login_required
 def authority_add(request):
     if request.method == 'POST':
         form = AuthorityCreate(request.POST, request.FILES)
@@ -199,7 +253,7 @@ def authority_details(request, id):
     context = {'authority':authority}
     return render(request, 'authority/a_details.html', context )
 
-
+@login_required
 def authority_update(request, id):
     authority = get_object_or_404(Authority, id=id)
     if request.method == 'POST':
@@ -250,7 +304,7 @@ def student_list(request):
 
     return render(request, "student/list.html", context)
 
-
+@login_required
 def student_update(request, id):
     student = get_object_or_404(Student, id=id)
     if request.method =="POST":
@@ -265,7 +319,7 @@ def student_update(request, id):
 
 
 
-    
+@login_required
 def student_add(request):
     if request.method =="POST":
         students = StudentForm(request.POST, request.FILES)
@@ -280,6 +334,7 @@ def student_add(request):
 
 
 #class
+@login_required
 def class_add(request):
     if request.method == "POST":
         form = StudentClassCreate(request.POST)
@@ -294,5 +349,236 @@ def class_add(request):
     
     return render(request, 'classes/c_add.html', {'form': form})
 
-def check(request):
-    return render(request, 'bill.html') 
+
+# image add
+@login_required
+def image_add(request):
+    if request.method == "POST":
+        form = GalleryImageForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return redirect("image_list")
+    else:
+        form = GalleryImageForm()
+
+    return render(request, "image/image_add.html", {"form": form})
+@login_required
+def image_update(request, id):
+    image = get_object_or_404(GalleryImage, id=id)
+    if request.method == "POST":
+        form = GalleryImageForm(request.POST, request.FILES, instance=image)
+
+        if form.is_valid():
+            form.save()
+            return redirect("image_list")
+    else:
+        form = GalleryImageForm(instance=image)
+
+    return render(request, "image/image_add.html", {"form": form})
+
+@login_required
+def image_delete(request, id):
+    image = get_object_or_404(GalleryImage, id=id)
+
+    if request.method == "POST":
+        image.delete()
+        return redirect("image_list")
+
+    return render(request,"image/image_delete.html",{"image": image})
+
+
+def image_list(request):
+    images = GalleryImage.objects.order_by("-created_at")
+    return render(request,"image/image_list.html",{"images": images})
+
+
+# library 
+@login_required
+def library_create(request):
+    form = LibraryCreate(request.POST or None, request.FILES or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return redirect("library_list")
+
+    return render(request, "library/book_add.html", {"form": form})
+
+def library_list(request):
+    books = Library.objects.all()
+    return render(request, "library/book_list.html", {"books": books})
+
+@login_required
+def library_update(request, id):
+    book = get_object_or_404(Library, id=id)
+
+    form = LibraryCreate(
+        request.POST or None,
+        request.FILES or None,
+        instance=book
+    )
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return redirect("library_list")
+
+    return render(request, "library/book_add.html", {"form": form})
+
+@login_required
+def library_delete(request, pk):
+    book = get_object_or_404(Library, pk=pk)
+    book.delete()
+    return redirect("library_list")
+
+@login_required
+def document_create(request):
+    form = MadrasahDocumentForm(request.POST or None, request.FILES or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return redirect("document_list")
+
+    return render(request, "dashboard/document/document_form.html", {"form": form})
+
+def document_list(request):
+    documents = MadrasahDocuments.objects.all()
+    return render(request, "dashboard/document/document_list.html", {"documents": documents})
+
+
+@login_required
+def document_update(request, pk):
+    document = get_object_or_404(MadrasahDocuments, pk=pk)
+
+    form = MadrasahDocumentForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=document
+    )
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return redirect("document_list")
+
+    return render(request, "dashboard/document/document_form.html", {"form": form})
+
+
+@login_required
+def document_delete(request, pk):
+    document = get_object_or_404(MadrasahDocuments, pk=pk)
+    document.delete()
+    return redirect("document_list")
+
+
+def principal_message(request):
+    message = PrincipalMessage.objects.first()
+
+    form = PrincipalMassegeForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=message
+    )
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return redirect("principal_message")
+
+    return render(request, "dashboard/principal/principal_form.html", {"form": form})
+
+
+def madrasah_information(request):
+    info = MadrasahInformation.objects.first()
+
+    form = MadrasahInformationForm(
+        request.POST or None,
+        request.FILES or None,
+        instance=info
+    )
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return redirect("about_list")
+
+    return render(request, "about/about_add.html", {"form": form})
+
+
+def madrasah_information_list(request):
+   
+    info = MadrasahInformation.objects.first()
+
+    return render( request,"about/about_list.html",{"madrasah_info": info})
+
+
+
+def routine_list(request):
+    routines = Routine.objects.select_related(
+        "teacher",
+        "student_class"
+    ).order_by("student_class", "period")
+
+    return render(request,"routine/rotine_list.html",{"routines": routines})
+
+@login_required
+def routine_create(request):
+    RoutineFormSet = modelformset_factory(
+        Routine,
+        form=RoutineForm,
+        extra=1,
+        can_delete=True
+    )
+
+    if request.method == "POST":
+        formset = RoutineFormSet(
+            request.POST,
+            queryset=Routine.objects.none()
+        )
+
+        if formset.is_valid():
+            formset.save()
+            messages.success(request, "Routines added successfully.")
+            return redirect("routine_list")
+
+    else:
+        formset = RoutineFormSet(
+            queryset=Routine.objects.none()
+        )
+
+    return render(request,"routine/rotine.html", {"formset": formset})
+
+
+@login_required
+def routine_edit(request, id):
+    routine = get_object_or_404(Routine, id=id)
+
+    if request.method == "POST":
+        form = RoutineForm(request.POST, instance=routine)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Routine updated successfully.")
+            return redirect("routine_list")
+
+    else:
+        form = RoutineForm(instance=routine)
+
+    return render(request,"routine/rotine.html",{"form": form})
+
+@login_required
+def routine_delete(request, pk):
+    routine = get_object_or_404(Routine, pk=pk)
+
+    if request.method == "POST":
+        routine.delete()
+        messages.success(request, "Routine deleted successfully.")
+        return redirect("routine_list")
+
+    return render(
+        request,
+        "routine/routine_delete.html",
+        {"routine": routine}
+    )

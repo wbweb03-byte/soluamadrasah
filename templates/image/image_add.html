@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10 bg-white shadow-lg rounded-xl p-6">
+
+    <h2 class="text-3xl font-bold text-center text-indigo-600 mb-6">
+        Upload Image
+    </h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="mb-5">
+            <label class="block text-gray-700 font-medium mb-2">
+                Select Image
+            </label>
+            {{ form.img }}
+        </div>
+
+        <button
+            type="submit"
+            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition duration-300"
+        >
+            Upload Image
+        </button>
+    </form>
+
+</div>
+{% endblock %}

@@ -1,0 +1,562 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Routine — Add / Edit (Bulk)</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        .form-card {
+            transition: all 0.25s ease-in-out;
+        }
+        .form-card:hover {
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+        .input-focus-ring:focus {
+            outline: none;
+            ring: 2px solid #0ea5e9;
+            border-color: #0ea5e9;
+        }
+        .error-text {
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-6px);
+            }
+            75% {
+                transform: translateX(6px);
+            }
+        }
+        .toast-message {
+            animation: slideDown 0.4s ease forwards;
+        }
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .row-enter {
+            animation: fadeInRow 0.25s ease;
+        }
+        @keyframes fadeInRow {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .remove-row:disabled {
+            opacity: 0.3 !important;
+            cursor: not-allowed !important;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans antialiased">
+
+    <!-- ============================================================
+    MAIN WRAPPER
+    ============================================================ -->
+    <div class="min-h-screen flex flex-col lg:flex-row">
+
+        <!-- ==========================================================
+        SIDEBAR (consistent)
+        ========================================================== -->
+        <aside class="w-full lg:w-72 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 shadow-sm lg:min-h-screen flex-shrink-0">
+            <div class="p-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-lg font-bold shadow-md shadow-indigo-200">
+                    <i class="fas fa-mosque"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">Madrasah<span class="text-indigo-600">Admin</span></h1>
+                    <p class="text-xs text-slate-400 -mt-0.5">Dashboard · Routine</p>
+                </div>
+            </div>
+
+            <nav class="p-4 space-y-1.5">
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-th-large w-5 text-center"></i> Dashboard
+                </a>
+                <a href="{% url 'routine_list' %}" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100/50">
+                    <i class="fas fa-calendar-alt w-5 text-center"></i> Routine
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-users w-5 text-center"></i> Students
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-chalkboard-teacher w-5 text-center"></i> Teachers
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-cog w-5 text-center"></i> Settings
+                </a>
+            </nav>
+
+            <div class="p-4 mt-6 border-t border-slate-100">
+                <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-sm font-bold">A</div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-700">Admin User</p>
+                        <p class="text-[10px] text-slate-400">admin@madrasah.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ==========================================================
+        MAIN CONTENT
+        ========================================================== -->
+        <main class="flex-1 p-6 lg:p-10">
+
+            <!-- Page Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-tight flex items-center gap-3">
+                        <i class="fas fa-calendar-plus text-indigo-600 text-2xl"></i>
+                        Manage Routines
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">
+                        <i class="fas fa-edit mr-1.5 text-slate-400"></i>
+                        Add or update multiple class routines at once.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="{% url 'routine_list' %}" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-list"></i> View All Routines
+                    </a>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            FORM CARD
+            ========================================================== -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 form-card overflow-hidden">
+
+                <!-- Form Header -->
+                <div class="px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50/60 to-white flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-700">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-slate-800">Routine Entries</h3>
+                            <p class="text-xs text-slate-400">Add one or more routines</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <i class="fas fa-asterisk text-red-400 text-[10px]"></i>
+                        <span>required</span>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                DJANGO FORMSET — START
+                ========================================================== -->
+                <form
+                method="POST"
+                id="routineForm"
+                class="p-6 lg:p-8"
+                novalidate
+                >
+                {% csrf_token %}
+
+                <!-- Management form (required for formsets) -->
+                {{ formset.management_form }}
+
+                <!-- ==========================================================
+                TABLE OF ROUTINE ROWS
+                ========================================================== -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50/80 text-slate-600 uppercase text-xs font-semibold tracking-wider border-b border-slate-200">
+                            <tr>
+                                <th class="px-3 py-3 text-left">#</th>
+                                <th class="px-3 py-3 text-left">Teacher <span class="text-red-500">*</span></th>
+                                <th class="px-3 py-3 text-left">Class <span class="text-red-500">*</span></th>
+                                <th class="px-3 py-3 text-left">Subject <span class="text-red-500">*</span></th>
+                                <th class="px-3 py-3 text-left">Period <span class="text-red-500">*</span></th>
+                                <th class="px-3 py-3 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="routineRows">
+                            <!-- Existing rows from formset -->
+                            {% for form in formset %}
+                            <tr class="routine-row border-b border-slate-100 hover:bg-slate-50/60 transition-colors row-enter" id="row-{{ forloop.counter0 }}">
+                                {{ form.id }}
+                                <td class="px-3 py-3 text-center text-slate-400 font-medium row-number">{{ forloop.counter }}</td>
+                                <td class="px-3 py-3">
+                                    {{ form.teacher }}
+                                    {% if form.teacher.errors %}
+                                    <p class="text-red-500 text-xs mt-1 error-text">{{ form.teacher.errors.0 }}</p>
+                                    {% endif %}
+                                </td>
+                                <td class="px-3 py-3">
+                                    {{ form.student_class }}
+                                    {% if form.student_class.errors %}
+                                    <p class="text-red-500 text-xs mt-1 error-text">{{ form.student_class.errors.0 }}</p>
+                                    {% endif %}
+                                </td>
+                                <td class="px-3 py-3">
+                                    {{ form.subject }}
+                                    {% if form.subject.errors %}
+                                    <p class="text-red-500 text-xs mt-1 error-text">{{ form.subject.errors.0 }}</p>
+                                    {% endif %}
+                                </td>
+                                <td class="px-3 py-3">
+                                    {{ form.period }}
+                                    {% if form.period.errors %}
+                                    <p class="text-red-500 text-xs mt-1 error-text">{{ form.period.errors.0 }}</p>
+                                    {% endif %}
+                                </td>
+                                <td class="px-3 py-3 text-center">
+                                    <button type="button" class="remove-row text-red-400 hover:text-red-600 transition-colors p-1 rounded hover:bg-red-50" title="Remove this row">
+                                        <i class="fas fa-times-circle text-lg"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ==========================================================
+                ADD BUTTON
+                ========================================================== -->
+                <div class="mt-4 flex justify-start">
+                    <button type="button" id="addRowBtn" class="inline-flex items-center gap-2 px-4 py-2 border-2 border-dashed border-indigo-300 text-indigo-600 hover:bg-indigo-50 rounded-xl transition-colors text-sm font-medium">
+                        <i class="fas fa-plus-circle"></i> Add Another Routine
+                    </button>
+                </div>
+
+                <!-- ==========================================================
+                FORM ACTIONS
+                ========================================================== -->
+                <div class="mt-8 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 text-sm text-slate-500">
+                        <i class="fas fa-info-circle text-slate-400"></i>
+                        <span>All changes are saved immediately.</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <a href="{% url 'routine_list' %}" class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors duration-200">
+                            <i class="fas fa-times mr-1.5"></i> Cancel
+                        </a>
+                        <button type="submit" id="submitBtn" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-indigo-200/60 hover:shadow-indigo-300/50 transition-all duration-200 flex items-center gap-2">
+                            <i class="fas fa-save"></i>
+                            Save All Routines
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+            <!-- ==========================================================
+            DJANGO FORMSET — END
+            ========================================================== -->
+
+        </div>
+        <!-- /form-card -->
+
+        <!-- ==========================================================
+        FOOTER NOTE
+        ========================================================== -->
+        <div class="mt-6 text-center text-xs text-slate-400 flex items-center justify-center gap-4">
+            <span><i class="far fa-clock mr-1"></i> Last saved: just now</span>
+            <span>·</span>
+            <span><i class="fas fa-lock mr-1"></i> Secure connection</span>
+            <span>·</span>
+            <span>v2.4.0</span>
+        </div>
+
+    </main>
+</div>
+
+<!-- ============================================================
+TOAST NOTIFICATION
+============================================================ -->
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-6 py-3.5 rounded-xl shadow-2xl shadow-emerald-200/50 flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-500 z-50 toast-message">
+    <i class="fas fa-check-circle text-xl"></i>
+    <span class="font-medium">Routines saved successfully!</span>
+    <button onclick="hideToast()" class="ml-4 text-white/70 hover:text-white transition-colors">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
+
+<!-- ============================================================
+JAVASCRIPT — Fixed dynamic row management
+============================================================ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ----------------------------------------------------------
+        // 1. DYNAMIC ROW MANAGEMENT (Add / Remove)
+        // ----------------------------------------------------------
+        const container = document.getElementById('routineRows');
+        const addBtn = document.getElementById('addRowBtn');
+        const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+
+        // Store the HTML of an empty row template (first row)
+        let emptyRowHTML = null;
+        // Get the first row as template (clone it without values)
+        const firstRow = container.querySelector('.routine-row');
+        if (firstRow) {
+            // Clone the row, clear values, remove error messages
+            const clone = firstRow.cloneNode(true);
+            // Clear input and select values (except hidden id)
+            clone.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(el => {
+                el.value = '';
+                el.classList.remove('is-invalid');
+            });
+            // Remove all error messages
+            clone.querySelectorAll('.error-text').forEach(el => el.remove());
+            // Remove any ID attributes from fields (they'll be regenerated)
+            clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+            // Store the outer HTML as template
+            emptyRowHTML = clone.outerHTML;
+        }
+
+        // Function to re-index all rows
+        function updateIndices() {
+            const rows = container.querySelectorAll('.routine-row');
+            rows.forEach((row, index) => {
+                // Update row number
+                const numCell = row.querySelector('.row-number');
+                if (numCell) numCell.textContent = index + 1;
+
+                // Update all form field names and IDs
+                row.querySelectorAll('[name]').forEach(el => {
+                    const name = el.getAttribute('name');
+                    if (name) {
+                        const newName = name.replace(/form-\d+-/, `form-${index}-`);
+                        el.setAttribute('name', newName);
+                    }
+                });
+                row.querySelectorAll('[id]').forEach(el => {
+                    const id = el.getAttribute('id');
+                    if (id) {
+                        const newId = id.replace(/id_form-\d+-/, `id_form-${index}-`);
+                        el.setAttribute('id', newId);
+                    }
+                });
+                // Also update label's for attribute (if any)
+                row.querySelectorAll('label[for]').forEach(el => {
+                    const forAttr = el.getAttribute('for');
+                    if (forAttr) {
+                        const newFor = forAttr.replace(/id_form-\d+-/, `id_form-${index}-`);
+                        el.setAttribute('for', newFor);
+                    }
+                });
+                // Update row ID
+                row.id = `row-${index}`;
+            });
+
+            // Update the management form TOTAL_FORMS
+            if (totalForms) {
+                totalForms.value = rows.length;
+            }
+
+            // Manage remove buttons: disable if only one row
+            const removeBtns = container.querySelectorAll('.remove-row');
+            if (removeBtns.length === 1) {
+                removeBtns[0].disabled = true;
+            } else {
+                removeBtns.forEach(btn => btn.disabled = false);
+            }
+        }
+
+        // Function to add a new row
+        function addRow() {
+            if (!emptyRowHTML) {
+                console.warn('No template row found.');
+                return;
+            }
+            // Create a temporary container
+            const temp = document.createElement('tbody');
+            temp.innerHTML = emptyRowHTML;
+            const newRow = temp.firstElementChild;
+
+            // Insert the new row at the end of the container
+            container.appendChild(newRow);
+
+            // Re-index all rows to update form field names and IDs
+            updateIndices();
+
+            // Trigger animation
+            newRow.classList.add('row-enter');
+            setTimeout(() => newRow.classList.remove('row-enter'), 300);
+        }
+
+        // Bind remove button events
+        function bindRemoveButtons() {
+            container.querySelectorAll('.remove-row').forEach(btn => {
+                btn.onclick = function(e) {
+                    e.preventDefault();
+                    const row = this.closest('.routine-row');
+                    // Do not remove if only one row remains
+                    if (container.querySelectorAll('.routine-row').length <= 1) {
+                        return;
+                    }
+                    if (row) {
+                        row.remove();
+                        updateIndices();
+                    }
+                };
+            });
+        }
+
+        // Initial binding and indexing
+        if (firstRow) {
+            // If there's only one row, disable its remove button
+            const removeBtns = container.querySelectorAll('.remove-row');
+            if (removeBtns.length === 1) {
+                removeBtns[0].disabled = true;
+            }
+            bindRemoveButtons();
+            updateIndices(); // ensure correct indexing from start
+        }
+
+        // Add row button click handler
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addRow();
+            // Re-bind remove buttons for new row
+            bindRemoveButtons();
+        });
+
+        // ----------------------------------------------------------
+        // 2. CLIENT-SIDE VALIDATION (per row)
+        // ----------------------------------------------------------
+        const form = document.getElementById('routineForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            let firstError = null;
+
+            // Validate all required fields in each row
+            const rows = container.querySelectorAll('.routine-row');
+            rows.forEach(row => {
+                const requiredFields = row.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    // Remove previous error styles
+                    field.classList.remove('border-red-400', 'ring-2', 'ring-red-200');
+                    const parent = field.closest('td') || field.closest('div') || field.parentElement;
+                    const oldErr = parent.querySelector('.error-text');
+                    if (oldErr) oldErr.remove();
+
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('border-red-400', 'ring-2', 'ring-red-200');
+                        const errMsg = document.createElement('p');
+                        errMsg.className = 'text-red-500 text-xs mt-1 error-text';
+                        errMsg.innerHTML = `<i class="fas fa-exclamation-circle"></i> This field is required.`;
+                        parent.appendChild(errMsg);
+                        if (!firstError) firstError = field;
+                    }
+                });
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                if (firstError) {
+                    firstError.focus();
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                submitBtn.classList.add('animate-[shake_0.5s_ease]');
+                setTimeout(() => submitBtn.classList.remove('animate-[shake_0.5s_ease]'), 500);
+                return;
+            }
+
+            // Show saving state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+            submitBtn.disabled = true;
+
+            // Re-enable after timeout (in case of server error)
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Save All Routines';
+                submitBtn.disabled = false;
+            }, 8000);
+        });
+
+        // Remove error styles on focus
+        document.addEventListener('focusin', function(e) {
+            if (e.target.matches('input, select, textarea')) {
+                e.target.classList.remove('border-red-400', 'ring-2', 'ring-red-200');
+                const parent = e.target.closest('td') || e.target.closest('div') || e.target.parentElement;
+                const err = parent.querySelector('.error-text');
+                if (err) err.remove();
+            }
+        });
+
+        // ----------------------------------------------------------
+        // 3. TOAST HELPERS
+        // ----------------------------------------------------------
+        window.showToast = function(message) {
+            const toast = document.getElementById('toast');
+            const msgSpan = toast.querySelector('span');
+            if (msgSpan) msgSpan.textContent = message || 'Routines saved successfully!';
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                hideToast();
+            }, 5000);
+        };
+
+        window.hideToast = function() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-20', 'opacity-0');
+        };
+
+        // Show toast if ?saved=1 is present
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('saved') === '1') {
+            setTimeout(() => {
+                showToast('Routines saved successfully! 🎉');
+            }, 300);
+            if (window.history && window.history.replaceState) {
+                const newUrl = window.location.pathname + window.location.search.replace(/[?&]saved=1/, '');
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        }
+
+        console.log('✅ Routine formset ready.');
+    });
+</script>
+
+</body>
+</html>

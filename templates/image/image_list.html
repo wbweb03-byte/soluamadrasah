@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+
+    <!-- ========== HEADER with Search ========== -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 flex items-center gap-2">
+                <i class="fas fa-images text-indigo-500"></i>
+                Image Gallery
+            </h1>
+            <p class="text-sm text-gray-500 mt-1">
+                {{ images|length }} images in your collection
+            </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+            <!-- Search Form -->
+            <form method="get" action="" class="flex items-center">
+                <div class="relative">
+                    <input type="text" name="q" value="{{ request.GET.q|default:'' }}"
+                           placeholder="Search images..."
+                           class="w-48 md:w-60 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                </div>
+                <button type="submit" class="ml-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 transition">
+                    Go
+                </button>
+            </form>
+
+            <a href="{% url 'image_add' %}"
+               class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg flex items-center gap-2 shadow-md hover:shadow-lg transition">
+                <i class="fas fa-plus-circle"></i> Add Image
+            </a>
+        </div>
+    </div>
+
+    <!-- ========== IMAGE GRID ========== -->
+    {% if images %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+        {% for image in images %}
+        <div class="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
+
+            <!-- Image Container – fixed aspect ratio ensures uniform size -->
+            <div class="relative w-full aspect-[4/3] overflow-hidden bg-gray-100">
+                <img src="{{ image.img.url }}"
+                     alt="{{ image.title|default:'Gallery image' }}"
+                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                <!-- Optional overlay on hover -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-4 flex flex-col flex-grow">
+                <!-- Title (if available) – fallback to filename -->
+                <h3 class="font-semibold text-gray-800 text-lg truncate">
+                    {{ image.title|default:image.img.name|cut:"images/"|truncatechars:20 }}
+                </h3>
+
+                <!-- Description / date -->
+                <p class="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                    <i class="far fa-calendar-alt"></i>
+                    {{ image.created_at|date:"M d, Y" }}
+                </p>
+
+                <!-- Spacer to push buttons to bottom -->
+                <div class="flex-grow"></div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2 mt-4 pt-3 border-t border-gray-100">
+                    <a href="{% url 'image_update' image.id %}"
+                       class="flex-1 text-center bg-yellow-500 hover:bg-yellow-600 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-1">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button type="button"
+                            class="flex-1 text-center bg-red-500 hover:bg-red-600 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-1 delete-btn"
+                            data-id="{{ image.id }}"
+                            data-name="{{ image.title|default:image.img.name|cut:'images/'|truncatechars:20 }}">
+                        <i class="fas fa-trash-alt"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- ========== PAGINATION (if using Django's paginator) ========== -->
+    {% if is_paginated %}
+    <div class="flex justify-center mt-10">
+        <nav class="flex items-center gap-1">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                   class="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100">&laquo;</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="px-3 py-1 rounded bg-indigo-600 text-white">{{ num }}</span>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <a href="?page={{ num }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                       class="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+                   class="px-3 py-1 rounded border border-gray-300 hover:bg-gray-100">&raquo;</a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+
+    <!-- ========== EMPTY STATE ========== -->
+    {% else %}
+    <div class="bg-white rounded-2xl shadow-lg p-12 text-center max-w-md mx-auto">
+        <div class="text-6xl text-gray-300 mb-4">
+            <i class="fas fa-images"></i>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-700 mb-2">
+            No Images Found
+        </h2>
+        <p class="text-gray-500 mb-6">
+            {{ request.GET.q|yesno:"No results match your search. Try a different keyword.,Upload your first image to start the gallery." }}
+        </p>
+        <a href="{% url 'image_add' %}"
+           class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition">
+            <i class="fas fa-upload mr-2"></i> Upload Image
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- ========== DELETE CONFIRMATION MODAL ========== -->
+<div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden transition-opacity">
+    <div class="bg-white rounded-2xl max-w-md w-full mx-4 p-6 shadow-2xl transform transition-all scale-95">
+        <div class="text-center">
+            <div class="text-5xl text-red-500 mb-3">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800">Confirm Deletion</h3>
+            <p class="text-gray-600 mt-2">
+                Are you sure you want to delete <strong id="deleteItemName" class="text-gray-800"></strong>?
+                This action cannot be undone.
+            </p>
+            <div class="flex gap-3 mt-6 justify-center">
+                <button id="cancelDeleteBtn"
+                        class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    Cancel
+                </button>
+                <form id="deleteForm" method="post" action="">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md transition">
+                        <i class="fas fa-trash-alt mr-1"></i> Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // Delete modal logic
+        const modal = document.getElementById('deleteModal');
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteItemName = document.getElementById('deleteItemName');
+        const cancelBtn = document.getElementById('cancelDeleteBtn');
+
+        // Attach click to all delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const id = this.dataset.id;
+                const name = this.dataset.name || 'this image';
+                deleteItemName.textContent = name;
+                // Set form action to the correct delete URL
+                deleteForm.action = "{% url 'image_delete' 0 %}".replace('0', id);
+                modal.classList.remove('hidden');
+                // animate in
+                modal.querySelector('.bg-white').classList.remove('scale-95');
+                modal.querySelector('.bg-white').classList.add('scale-100');
+            });
+        });
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            modal.querySelector('.bg-white').classList.remove('scale-100');
+            modal.querySelector('.bg-white').classList.add('scale-95');
+        }
+
+        cancelBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+        });
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+    })();
+</script>
+
+<!-- Font Awesome for icons (if not already in base) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+{% endblock %}

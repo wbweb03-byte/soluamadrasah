@@ -1,0 +1,225 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Madrasah Dashboard Cards</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="bg-gray-50 p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">Madrasah Management</h1>
+            <p class="text-gray-500 text-sm">Quick access to all administrative sections</p>
+        </div>
+
+        <!-- Card Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+            <!-- ====== 1. LIBRARY ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-book-open text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Library</h3>
+                    <p class="text-sm text-gray-500 mt-1">Manage book inventory, borrowers & digital resources</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 2. PRINCIPAL MESSAGE ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-500 to-orange-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-pen-fancy text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Principal Message</h3>
+                    <p class="text-sm text-gray-500 mt-1">Edit & publish principal's welcome note and updates</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 3. SYLLABUS ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-layer-group text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Syllabus</h3>
+                    <p class="text-sm text-gray-500 mt-1">Design curriculum, assign subjects & course outlines</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 4. IMAGE / GALLERY ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-purple-500 to-violet-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-images text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Gallery</h3>
+                    <p class="text-sm text-gray-500 mt-1">Upload, organize & manage madrasah photo albums</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 5. ACCOUNT ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-sky-500 to-indigo-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-sky-500 to-indigo-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-user-circle text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Account</h3>
+                    <p class="text-sm text-gray-500 mt-1">Manage user profiles, roles & access permissions</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 6. FEES ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-rose-500 to-pink-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-rose-500 to-pink-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-coins text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Fees</h3>
+                    <p class="text-sm text-gray-500 mt-1">Track payments, generate invoices & fee structures</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 7. ROUTINE ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-cyan-500 to-blue-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-calendar-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">Routine</h3>
+                    <p class="text-sm text-gray-500 mt-1">Create class schedules, exam timetables & events</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 8. ABOUT MADRASAH ====== -->
+            <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-fuchsia-500 to-pink-500"></div>
+                <div class="p-5 flex flex-col items-start flex-1">
+                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-500 text-white flex items-center justify-center shadow-md mb-4">
+                        <i class="fas fa-mosque text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800">About Madrasah</h3>
+                    <p class="text-sm text-gray-500 mt-1">Update institution details, history & mission vision</p>
+                    <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                        Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- ====== BONUS: ADDITIONAL CARDS (EXTRA) ====== -->
+
+        <div class="mt-10 border-t border-gray-200 pt-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-4">📦 More Management Sections</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Staff -->
+                <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
+                    <div class="p-5 flex flex-col items-start flex-1">
+                        <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white flex items-center justify-center shadow-md mb-4">
+                            <i class="fas fa-users text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Staff</h3>
+                        <p class="text-sm text-gray-500 mt-1">Manage teachers, admins & support personnel</p>
+                        <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                            Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Notice Board -->
+                <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-yellow-500 to-amber-500"></div>
+                    <div class="p-5 flex flex-col items-start flex-1">
+                        <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-yellow-500 to-amber-500 text-white flex items-center justify-center shadow-md mb-4">
+                            <i class="fas fa-bullhorn text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Notice Board</h3>
+                        <p class="text-sm text-gray-500 mt-1">Post announcements, alerts & circulars</p>
+                        <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                            Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Admission -->
+                <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-green-500 to-emerald-500"></div>
+                    <div class="p-5 flex flex-col items-start flex-1">
+                        <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 text-white flex items-center justify-center shadow-md mb-4">
+                            <i class="fas fa-door-open text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Admission</h3>
+                        <p class="text-sm text-gray-500 mt-1">Manage applications, enrollments & student intake</p>
+                        <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                            Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Results -->
+                <a href="#" class="card-upgrade group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl border border-gray-100 flex flex-col transition-all duration-300 hover:-translate-y-1">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-500 to-rose-500"></div>
+                    <div class="p-5 flex flex-col items-start flex-1">
+                        <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-red-500 to-rose-500 text-white flex items-center justify-center shadow-md mb-4">
+                            <i class="fas fa-chart-bar text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">Results</h3>
+                        <p class="text-sm text-gray-500 mt-1">Publish exam results, transcripts & gradings</p>
+                        <div class="mt-4 text-indigo-600 font-medium text-sm flex items-center group-hover:translate-x-1 transition-transform">
+                            Access <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- ====== FOOTER NOTE ====== -->
+        <div class="mt-10 text-center text-xs text-gray-400 border-t border-gray-200 pt-6">
+            <i class="fas fa-code mr-1"></i> Built with Tailwind CSS & Font Awesome
+            <span class="mx-2">·</span>
+            <i class="fas fa-mosque mr-1"></i> Solua Madrasah Darul Quran
+        </div>
+
+    </div>
+
+</body>
+</html>

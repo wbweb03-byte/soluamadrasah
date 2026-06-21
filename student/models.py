@@ -114,3 +114,90 @@ class Student(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+
+class GalleryImage(models.Model):
+    title = models.CharField(max_length=100, blank=True)
+    img = models.ImageField(upload_to="gallery/")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title or self.img.name
+
+
+class MadrasahInformation(models.Model):
+    
+    m_ests = models.IntegerField(default=1977)
+    m_about = models.TextField(max_length=1000)
+    m_course = models.TextField(max_length=1000)
+    m_vision = models.TextField(max_length=1000)
+    m_phone = models.CharField(max_length=13)
+    m_email = models.EmailField(default="soluamadrasahaofficial12@gmail.com")
+    m_logo = models.ImageField(upload_to='logo/')
+    m_name = models.CharField(max_length=200, default="Solua Madrasah Darul Quran")
+   
+
+    def __str__(self):
+        return self.m_name
+
+class PrincipalMessage(models.Model):
+    title = models.CharField(max_length=100)
+
+    description = models.TextField()
+
+    admission_message = models.TextField()
+
+    published = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+    
+
+
+class MadrasahDocuments(models.Model):
+    title = models.CharField(max_length=200)
+    document_img = models.ImageField(upload_to="mad_docu/")
+    desc = models.TextField(blank=True)
+    created_at = models.DateField(auto_now_add=True)    
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Madrasah Document"
+        verbose_name_plural = "Madrasah Documents"
+
+    def __str__(self):
+        return self.title
+
+
+class Library(models.Model):
+    b_name = models.CharField(max_length=200)
+    b_img = models.ImageField(upload_to="books/")
+    author = models.CharField(max_length=300)
+    desc = models.TextField(blank=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Library"
+        verbose_name_plural = "Libraries"
+
+    def __str__(self):
+        return self.b_name
+    
+
+class Routine(models.Model):
+    teacher = models.ForeignKey(Teacher,on_delete=models.CASCADE,related_name="routines")
+
+    student_class = models.ForeignKey(StudentClass,on_delete=models.CASCADE,related_name="routines")
+
+    subject = models.CharField(max_length=100)
+    period = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["student_class", "period"],name="unique_class_period")]
+
+    def __str__(self):
+        return f"{self.student_class.name} - Period {self.period} - {self.subject}"

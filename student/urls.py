@@ -3,8 +3,10 @@ from . import views
 urlpatterns = [
 
     #dashboard
-     path('dashboard/',views.dashboard, name='dashboard'),
-
+    path('dashboard/',views.dashboard, name='dashboard'),
+    path('pre_dash/',views.pre_dash, name='pre_dash'),
+    # login
+   
     path('',views.blog_view, name='blogs' ),
     #blog
     path('blog_add/',views.blog_add, name='blog_add' ),
@@ -44,8 +46,41 @@ urlpatterns = [
     #class 
     path('studentclass/add/', views.class_add, name='class_add'),
 
+    #image
+    path('image/add/', views.image_add, name='image_add'),
+    path('image/list/', views.image_list, name='image_list'),
+    path('image/update/<int:id>/', views.image_update, name='image_update'),
+    path('image/delete/<int:id>/', views.image_delete, name='image_delete'),
+
     # check
 
-    path('check/',views.check, name='check' ),
+    # Library
+    path("library/", views.library_list, name="library_list"),
+    path("library/add/", views.library_create, name="library_create"),
+    path("library/<int:id>/edit/", views.library_update, name="library_update"),
+    path("library/<int:pk>/delete/", views.library_delete, name="library_delete"),
+
+    # Documents
+    path("documents/", views.document_list, name="document_list"),
+    path("documents/add/", views.document_create, name="document_create"),
+    path("documents/<int:pk>/edit/", views.document_update, name="document_update"),
+    path("documents/<int:pk>/delete/", views.document_delete, name="document_delete"),
+
+    # Principal
+    path("principal-message/", views.principal_message, name="principal_message"),
+
+    # Madrasah Information
+    path("about_list/", views.madrasah_information_list, name="about_list"),
+    path("about_add/", views.madrasah_information, name="about_add"),
+     # routine 
+    path("routine/", views.routine_list, name="routine_list"),
+    path("routine/add/", views.routine_create, name="routine_create"),
+    path("routine/<int:id>/edit/", views.routine_edit, name="routine_edit"),
+    path("routine/<int:pk>/delete/", views.routine_delete, name="routine_delete"),
+
+    # login
+
+    path("login/", views.user_login, name="login_view"),
+    path("logout/", views.user_logout, name="logout"),
 
 ]

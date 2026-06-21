@@ -1,0 +1,628 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Madrasah Information — Add / Edit</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <style>
+        /* Custom smooth transitions & subtle touches */
+        .form-card {
+            transition: all 0.25s ease-in-out;
+        }
+        .form-card:hover {
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        .preview-img {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .preview-img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.2);
+        }
+        .input-focus-ring:focus {
+            outline: none;
+            ring: 2px solid #0ea5e9;
+            border-color: #0ea5e9;
+        }
+        .error-text {
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-6px);
+            }
+            75% {
+                transform: translateX(6px);
+            }
+        }
+        .toast-message {
+            animation: slideDown 0.4s ease forwards;
+        }
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 8px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 font-sans antialiased">
+
+    <!-- ============================================================
+    MAIN WRAPPER
+    ============================================================ -->
+    <div class="min-h-screen flex flex-col lg:flex-row">
+
+        <!-- ==========================================================
+        SIDEBAR (simplified for demo – replace with your own)
+        ========================================================== -->
+        <aside class="w-full lg:w-72 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 shadow-sm lg:min-h-screen flex-shrink-0">
+            <div class="p-6 flex items-center gap-3 border-b border-slate-100">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-lg font-bold shadow-md shadow-indigo-200">
+                    <i class="fas fa-mosque"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-800 tracking-tight">Madrasah<span class="text-indigo-600">Admin</span></h1>
+                    <p class="text-xs text-slate-400 -mt-0.5">Dashboard · Information</p>
+                </div>
+            </div>
+
+            <nav class="p-4 space-y-1.5">
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-th-large w-5 text-center"></i> Dashboard
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100/50">
+                    <i class="fas fa-university w-5 text-center"></i> Madrasah Info
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-users w-5 text-center"></i> Students
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-chalkboard-teacher w-5 text-center"></i> Teachers
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200">
+                    <i class="fas fa-cog w-5 text-center"></i> Settings
+                </a>
+            </nav>
+
+            <div class="p-4 mt-6 border-t border-slate-100">
+                <div class="flex items-center gap-3 px-4 py-3 bg-slate-50 rounded-xl">
+                    <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 text-sm font-bold">A</div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-700">Admin User</p>
+                        <p class="text-[10px] text-slate-400">admin@madrasah.com</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ==========================================================
+        MAIN CONTENT
+        ========================================================== -->
+        <main class="flex-1 p-6 lg:p-10">
+
+            <!-- Page Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-tight flex items-center gap-3">
+                        <i class="fas fa-pen-fancy text-indigo-600 text-2xl"></i>
+                        Madrasah Information
+                    </h2>
+                    <p class="text-slate-500 text-sm mt-1">
+                        <i class="fas fa-edit mr-1.5 text-slate-400"></i>
+                        Fill in the details below to update your madrasah profile.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-200/60">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Active
+                    </span>
+                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1.5 transition-colors">
+                        <i class="fas fa-eye"></i> View Public
+                    </a>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            FORM CARD
+            ========================================================== -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 form-card overflow-hidden">
+
+                <!-- Form Header -->
+                <div class="px-6 py-4 border-b border-slate-100 bg-gradient-to-r from-slate-50/60 to-white flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-700">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-slate-800">Information Details</h3>
+                            <p class="text-xs text-slate-400">All fields are required unless marked optional</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <i class="fas fa-asterisk text-red-400 text-[10px]"></i>
+                        <span>required</span>
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                DJANGO FORM — START
+                ========================================================== -->
+                <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="madrasahForm"
+                class="p-6 lg:p-8 space-y-7"
+                novalidate
+                >
+                {% csrf_token %}
+
+                <!-- ==========================================================
+                ROW 1: Name + Est. Date (2 cols)
+                ========================================================== -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- m_name -->
+                    <div>
+                        <label for="{{ form.m_name.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            <i class="fas fa-building text-indigo-400 mr-1.5"></i>
+                            Madrasah Name <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.m_name }}
+                        {% if form.m_name.errors %}
+                        <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text">
+                            <i class="fas fa-exclamation-circle"></i> {{ form.m_name.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- m_ests (Establishment) -->
+                    <div>
+                        <label for="{{ form.m_ests.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            <i class="fas fa-calendar-alt text-indigo-400 mr-1.5"></i>
+                            Establishment Date <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.m_ests }}
+                        {% if form.m_ests.errors %}
+                        <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text">
+                            <i class="fas fa-exclamation-circle"></i> {{ form.m_ests.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                ROW 2: About (full width)
+                ========================================================== -->
+                <div>
+                    <label for="{{ form.m_about.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        <i class="fas fa-paragraph text-indigo-400 mr-1.5"></i>
+                        About Madrasah <span class="text-red-500">*</span>
+                    </label>
+                    {{ form.m_about }}
+                    {% if form.m_about.errors %}
+                    <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text">
+                        <i class="fas fa-exclamation-circle"></i> {{ form.m_about.errors.0 }}
+                    </p>
+                    {% endif %}
+                    <p class="text-xs text-slate-400 mt-1.5">
+                        <i class="far fa-lightbulb mr-1"></i>
+                        Write a brief introduction about the madrasah.
+                    </p>
+                </div>
+
+                <!-- ==========================================================
+                ROW 3: Course + Vision (2 cols)
+                ========================================================== -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- m_course -->
+                    <div>
+                        <label for="{{ form.m_course.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            <i class="fas fa-book-open text-indigo-400 mr-1.5"></i>
+                            Courses Offered <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.m_course }}
+                        {% if form.m_course.errors %}
+                        <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text">
+                            <i class="fas fa-exclamation-circle"></i> {{ form.m_course.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- m_vision -->
+                    <div>
+                        <label for="{{ form.m_vision.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            <i class="fas fa-eye text-indigo-400 mr-1.5"></i>
+                            Vision & Mission <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.m_vision }}
+                        {% if form.m_vision.errors %}
+                        <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text">
+                            <i class="fas fa-exclamation-circle"></i> {{ form.m_vision.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                ROW 4: Phone + Email (2 cols)
+                ========================================================== -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- m_phone -->
+                    <div>
+                        <label for="{{ form.m_phone.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            <i class="fas fa-phone-alt text-indigo-400 mr-1.5"></i>
+                            Phone Number <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.m_phone }}
+                        {% if form.m_phone.errors %}
+                        <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text">
+                            <i class="fas fa-exclamation-circle"></i> {{ form.m_phone.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- m_email -->
+                    <div>
+                        <label for="{{ form.m_email.id_for_label }}" class="block text-sm font-medium text-slate-700 mb-1.5">
+                            <i class="fas fa-envelope text-indigo-400 mr-1.5"></i>
+                            Email Address <span class="text-red-500">*</span>
+                        </label>
+                        {{ form.m_email }}
+                        {% if form.m_email.errors %}
+                        <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text">
+                            <i class="fas fa-exclamation-circle"></i> {{ form.m_email.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ==========================================================
+                ROW 5: Logo Upload (full width)
+                ========================================================== -->
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                        <i class="fas fa-image text-indigo-400 mr-1.5"></i>
+                        Madrasah Logo <span class="text-red-500">*</span>
+                    </label>
+
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+
+                        <!-- File input -->
+                        <div class="w-full sm:w-auto">
+                            <div class="file-input-wrapper">
+                                <button type="button" class="px-5 py-2.5 bg-indigo-50 text-indigo-700 text-sm font-medium rounded-xl border border-indigo-200/60 hover:bg-indigo-100 transition-colors duration-200 flex items-center gap-2 cursor-pointer">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    Choose Logo
+                                </button>
+                                {{ form.m_logo }}
+                            </div>
+                            <p class="text-[11px] text-slate-400 mt-1.5">
+                                <i class="far fa-file-image mr-1"></i>
+                                PNG, JPG, SVG up to 5MB
+                            </p>
+                        </div>
+
+                        <!-- Preview -->
+                        <div id="logoPreviewContainer" class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden relative group">
+                                {% if form.instance.m_logo %}
+                                <img
+                                id="logoPreview"
+                                src="{{ form.instance.m_logo.url }}"
+                                alt="Current logo"
+                                class="w-full h-full object-cover preview-img"
+                                />
+                                {% else %}
+                                <img
+                                id="logoPreview"
+                                src=""
+                                alt="Logo preview"
+                                class="w-full h-full object-cover preview-img hidden"
+                                />
+                                <i id="placeholderIcon" class="fas fa-mosque text-3xl text-slate-300"></i>
+                                {% endif %}
+                            </div>
+                            <div class="text-sm">
+                                <p class="font-medium text-slate-700" id="fileNameText">
+                                    {% if form.instance.m_logo %}
+                                    {{ form.instance.m_logo.name|slice:"15" }}{% if form.instance.m_logo.name|length > 15 %}…{% endif %}
+                                    {% else %}
+                                    No file chosen
+                                    {% endif %}
+                                </p>
+                                <p class="text-xs text-slate-400" id="fileSizeText">
+                                    {% if form.instance.m_logo %}
+                                    {{ form.instance.m_logo.size|filesizeformat }}
+                                    {% else %}
+                                    —
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {% if form.m_logo.errors %}
+                    <p class="text-red-500 text-xs mt-2 flex items-center gap-1 error-text">
+                        <i class="fas fa-exclamation-circle"></i> {{ form.m_logo.errors.0 }}
+                    </p>
+                    {% endif %}
+                </div>
+
+                <!-- ==========================================================
+                FORM ACTIONS
+                ========================================================== -->
+                <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 text-sm text-slate-500">
+                        <i class="fas fa-info-circle text-slate-400"></i>
+                        <span>All changes are saved immediately.</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <a href="#" class="px-5 py-2.5 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors duration-200">
+                            <i class="fas fa-times mr-1.5"></i> Cancel
+                        </a>
+                        <button type="submit" id="submitBtn" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-md shadow-indigo-200/60 hover:shadow-indigo-300/50 transition-all duration-200 flex items-center gap-2">
+                            <i class="fas fa-save"></i>
+                            Save Information
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+            <!-- ==========================================================
+            DJANGO FORM — END
+            ========================================================== -->
+
+        </div>
+        <!-- /form-card -->
+
+        <!-- ==========================================================
+        FOOTER NOTE
+        ========================================================== -->
+        <div class="mt-6 text-center text-xs text-slate-400 flex items-center justify-center gap-4">
+            <span><i class="far fa-clock mr-1"></i> Last saved: just now</span>
+            <span>·</span>
+            <span><i class="fas fa-lock mr-1"></i> Secure connection</span>
+            <span>·</span>
+            <span>v2.4.0</span>
+        </div>
+
+    </main>
+</div>
+
+<!-- ============================================================
+TOAST NOTIFICATION (hidden by default)
+============================================================ -->
+<div id="toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-6 py-3.5 rounded-xl shadow-2xl shadow-emerald-200/50 flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-500 z-50 toast-message">
+    <i class="fas fa-check-circle text-xl"></i>
+    <span class="font-medium">Information saved successfully!</span>
+    <button onclick="hideToast()" class="ml-4 text-white/70 hover:text-white transition-colors">
+        <i class="fas fa-times"></i>
+    </button>
+</div>
+
+<!-- ============================================================
+JAVASCRIPT
+============================================================ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // ----------------------------------------------------------
+        // 1. LOGO PREVIEW
+        // ----------------------------------------------------------
+        const fileInput = document.querySelector('input[type="file"][name="m_logo"]');
+        const previewImg = document.getElementById('logoPreview');
+        const placeholderIcon = document.getElementById('placeholderIcon');
+        const fileNameText = document.getElementById('fileNameText');
+        const fileSizeText = document.getElementById('fileSizeText');
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        previewImg.src = event.target.result;
+                        previewImg.classList.remove('hidden');
+                        if (placeholderIcon) placeholderIcon.classList.add('hidden');
+                        fileNameText.textContent = file.name.length > 20 ? file.name.slice(0, 18) +
+                            '…' : file.name;
+                        fileSizeText.textContent = (file.size / 1024).toFixed(1) + ' KB';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    // reset to default if no file
+                    previewImg.classList.add('hidden');
+                    if (placeholderIcon) placeholderIcon.classList.remove('hidden');
+                    fileNameText.textContent = 'No file chosen';
+                    fileSizeText.textContent = '—';
+                }
+            });
+        }
+
+        // ----------------------------------------------------------
+        // 2. FORM VALIDATION (client-side)
+        // ----------------------------------------------------------
+        const form = document.getElementById('madrasahForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', function(e) {
+            // Basic validation: check required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            let firstError = null;
+
+            requiredFields.forEach(field => {
+                // Remove existing error styles
+                field.classList.remove('border-red-400', 'ring-2', 'ring-red-200');
+
+                const errorWrapper = field.closest('div')?.querySelector('.error-text');
+                if (errorWrapper) errorWrapper.remove();
+
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('border-red-400', 'ring-2', 'ring-red-200');
+
+                    // Create error message
+                    const parent = field.closest('div') || field.parentElement;
+                    const errMsg = document.createElement('p');
+                    errMsg.className =
+                        'text-red-500 text-xs mt-1.5 flex items-center gap-1 error-text';
+                    errMsg.innerHTML = `<i class="fas fa-exclamation-circle"></i> This field is required.`;
+                    parent.appendChild(errMsg);
+
+                    if (!firstError) firstError = field;
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                if (firstError) {
+                    firstError.focus();
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                // Shake submit button
+                submitBtn.classList.add('animate-[shake_0.5s_ease]');
+                setTimeout(() => submitBtn.classList.remove('animate-[shake_0.5s_ease]'), 500);
+                return;
+            }
+
+            // If valid, show toast after a tiny delay (simulate success)
+            // The actual success will come from server redirect, but we show toast
+            // for UX feedback. The toast will appear if form submission succeeds.
+            // We'll let the server handle it, but we can show a loading state.
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…';
+            submitBtn.disabled = true;
+
+            // The form will submit normally; if there's a server error, we re-enable.
+            // But since the page will reload on success, we don't need to do more.
+            // We'll use a small timeout to re-enable if something goes wrong.
+            setTimeout(() => {
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Information';
+                submitBtn.disabled = false;
+            }, 8000);
+        });
+
+        // ----------------------------------------------------------
+        // 3. TOAST HELPERS
+        // ----------------------------------------------------------
+        window.showToast = function(message) {
+            const toast = document.getElementById('toast');
+            const msgSpan = toast.querySelector('span');
+            if (msgSpan) msgSpan.textContent = message || 'Information saved successfully!';
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            // Auto-hide after 5s
+            clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => {
+                hideToast();
+            }, 5000);
+        };
+
+        window.hideToast = function() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-0', 'opacity-100');
+            toast.classList.add('translate-y-20', 'opacity-0');
+        };
+
+        // ----------------------------------------------------------
+        // 4. AUTO-TOAST ON PAGE LOAD IF ?saved=1
+        // ----------------------------------------------------------
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('saved') === '1') {
+            setTimeout(() => {
+                showToast('Madrasah information updated successfully! 🎉');
+            }, 300);
+            // Clean URL without reload
+            if (window.history && window.history.replaceState) {
+                const newUrl = window.location.pathname + window.location.search.replace(/[?&]saved=1/, '');
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        }
+
+        // ----------------------------------------------------------
+        // 5. TRIGGER FILE INPUT VIA CLICK ON BUTTON
+        // ----------------------------------------------------------
+        const fileBtn = document.querySelector('.file-input-wrapper button');
+        if (fileBtn && fileInput) {
+            fileBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                fileInput.click();
+            });
+        }
+
+        // ----------------------------------------------------------
+        // 6. REMOVE ERROR STYLES ON FOCUS
+        // ----------------------------------------------------------
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            el.addEventListener('focus', function() {
+                this.classList.remove('border-red-400', 'ring-2', 'ring-red-200');
+                const parent = this.closest('div') || this.parentElement;
+                const err = parent.querySelector('.error-text');
+                if (err) err.remove();
+            });
+        });
+
+        // ----------------------------------------------------------
+        // 7. TOGGLE PASSWORD / EYE (optional — just for demo)
+        // ----------------------------------------------------------
+        // (No password field here, but we keep for extensibility)
+
+        console.log('✅ Madrasah Info form ready.');
+    });
+</script>
+
+</body>
+</html>
