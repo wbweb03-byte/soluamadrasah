@@ -3,16 +3,20 @@ from .models import Student
 def generate_admission_number(session):
     year = session.split("-")[0]
 
-    last = Student.objects.filter(
-        admission_no__startswith=f"SMDQ-{year}"
-    ).order_by("-admission_no").first()
+    last = (
+        Student.objects.filter(
+            admission_no__startswith=f"SMDQ-{year}-No-"
+        )
+        .order_by("-admission_no")
+        .first()
+    )
 
     if last:
         last_no = int(last.admission_no.split("-")[-1])
     else:
         last_no = 0
 
-    return f"SMDQ-{year} No {last_no + 1:04d}"
+    return f"SMDQ-{year}-No-{last_no + 1:04d}"
 
 
 def generate_registration_number():

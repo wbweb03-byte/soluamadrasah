@@ -594,6 +594,7 @@ def routine_delete(request, pk):
 
 
 # student admit
+@login_required
 def student_admit(request):
     
     students = Student.objects.select_related("student_class")
