@@ -30,6 +30,12 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login,  logout 
 
+from django.utils import timezone
+from .utils import (
+    generate_admission_number,
+    generate_registration_number,
+)
+
 # Create your views here.
 
 # Login 
@@ -274,7 +280,7 @@ def student_details(request, student_id):
     return render(request, 'student/details.html',{"student":student} )
 
 
-from django.db.models import Q
+
 
 def student_list(request):
 
@@ -318,19 +324,22 @@ def student_update(request, id):
     return render(request, "student/add.html", {"students":students, "student":student })
 
 
-
 @login_required
 def student_add(request):
-    if request.method =="POST":
-        students = StudentForm(request.POST, request.FILES)
-        if students.is_valid():
-            students.save()
-            return redirect("student_list")
-    else:
-         students = StudentForm()
-    
-    return render(request, "student/add.html", {"students":students})
+    if request.method == "POST":
+        form = StudentForm(request.POST, request.FILES)
 
+        if form.is_valid():
+            form.save()
+            return redirect("student_list")
+
+        print(form.errors)          # ← এটা যোগ করো
+        print(request.POST)         # ← এটাও যোগ করো
+
+    else:
+        form = StudentForm()
+
+    return render(request, "student/add.html", {"form": form})
 
 
 #class
@@ -581,4 +590,92 @@ def routine_delete(request, pk):
         request,
         "routine/routine_delete.html",
         {"routine": routine}
+    )
+
+
+# student admit
+def student_admit(request):
+    
+    students = Student.objects.select_related("student_class")
+
+    q = request.GET.get("q")
+    student_class = request.GET.get("student_class")
+    status = request.GET.get("status")
+
+    if q:
+        students = students.filter(
+            Q(full_name__icontains=q) 
+              
+        )
+
+    if student_class:
+        students = students.filter(student_class_id=student_class)
+
+    
+
+    context = {
+        "student_list": students,
+        "classes": StudentClass.objects.all(),
+    }
+
+    return render(request, "download_panel/stu_list.html", context)
+
+@login_required
+def student_admit_card(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+
+    return render(
+        request,
+        "admit/admit.html",
+        {
+            "student": student
+        }
+    )
+
+
+@login_required
+def bulk_admit_card(request):
+
+    if request.method == "POST":
+
+        ids = request.POST.getlist("student_ids")
+
+        students = Student.objects.filter(id__in=ids)
+
+        return render(
+            request,
+            "admit/bulk_admit.html",
+            {
+                "students": students
+            }
+        )
+    
+
+@login_required
+def student_register(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+
+    if request.method == "POST":
+
+        student.blood_group = request.POST.get("blood_group")
+        student.contact = request.POST.get("contact")
+        student.previous_class = request.POST.get("previous_class")
+
+        # Session আগে থেকেই Student-এ আছে
+        if not student.session:
+            student.session = "2026-27"
+
+        student.admission_no = generate_admission_number(student.session)
+        student.registration_no = generate_registration_number()
+        student.registration_date = timezone.now().date()
+        student.status = "registered"
+
+        student.save()
+
+        return redirect("student_list")
+
+    return render(
+        request,
+        "admit/registration.html",
+        {"student": student}
     )

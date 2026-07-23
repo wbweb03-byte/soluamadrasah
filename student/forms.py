@@ -185,55 +185,187 @@ class AuthorityCreate(forms.ModelForm):
 
 
 
+
+
+
 class StudentForm(forms.ModelForm):
-    """Simple form for Student model"""
-    
+
     class Meta:
         model = Student
-        fields = '__all__'
+
+        fields = [
+            # ======================================================
+            # 1. Personal Information
+            # ======================================================
+            "full_name",
+            "img",
+            "date_of_birth",
+            "gender",
+            "blood_group",
+            "religion",
+            "adhaar_number",
+
+            # ======================================================
+            # 2. Guardian Information
+            # ======================================================
+            "father_name",
+            "mother_name",
+            "contact",
+            "father_adhaar",
+            "father_voter",
+
+            # ======================================================
+            # 3. Address Information
+            # ======================================================
+            "village",
+            "post_office",
+            "police_station",
+            "district",
+            "state",
+            "pin",
+
+            # ======================================================
+            # 4. Academic Information
+            # ======================================================
+            "student_class",
+            "class_roll",
+            "previous_class",
+            "session",
+        ]
 
         labels = {
-            'full_name': 'Student Full Name',
-            'img': 'Student Photograph',
-            'father_name': "Father's Full Name",
-            'mother_name': "Mother's Full Name",
-            'adhaar_number': 'Aadhaar Number (12 digits)',
-            'date_of_birth': 'Date of Birth',
-            'father_adhaar': "Father's Aadhaar Number",
-            'father_voter': "Father's Voter ID Card Number",
-            'village': 'Village Name',
-            'post_office': 'Post Office Name',
-            'police_station': 'Police Station Name',
-            'district': 'District Name',
-            'state': 'State Name',
-            'pin': 'PIN Code (Postal Code)',
-            'admission_date': 'Admission Date',
-            'student_class': 'Current Class',
-            'class_roll': 'Roll Number in Class',
-            'previous_class': 'Previous Class Attended',
-            'created_at': 'Registration Date & Time',
-        }
 
+            # Personal Information
+            "full_name": "Student Full Name",
+            "img": "Student Photograph",
+            "date_of_birth": "Date of Birth",
+            "gender": "Gender",
+            "blood_group": "Blood Group",
+            "religion": "Religion",
+            "adhaar_number": "Student Aadhaar Number",
+
+            # Guardian Information
+            "father_name": "Father's Full Name",
+            "mother_name": "Mother's Full Name",
+            "contact": "Mobile Number",
+            "father_adhaar": "Father's Aadhaar Number",
+            "father_voter": "Father's Voter ID",
+
+            # Address Information
+            "village": "Village",
+            "post_office": "Post Office",
+            "police_station": "Police Station",
+            "district": "District",
+            "state": "State",
+            "pin": "PIN Code",
+
+            # Academic Information
+            "student_class": "Current Class",
+            "class_roll": "Class Roll",
+            "previous_class": "Previous Class",
+            "session": "Academic Session",
+        }
 
         widgets = {
-            'full_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter full name'}),
-            'img': forms.FileInput(attrs={'class': 'form-control'}),
-            'father_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Enter father's name"}),
-            'mother_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Enter mother's name"}),
-            'adhaar_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '12-digit Aadhaar number'}),
-            'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'father_adhaar': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Father's 12-digit Aadhaar"}),
-            'father_voter': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Father's Voter ID (optional)"}),
-            'village': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Village name'}),
-            'post_office': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Post office name'}),
-            'police_station': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Police station name'}),
-            'district': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'District name'}),
-            'state': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'State name'}),
-            'pin': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '6-digit PIN code'}),
-            'student_class': forms.Select(attrs={'class': 'form-control'}),
-            'class_roll': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Roll number'}),
-            'previous_class': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Previous class (optional)'}),
+
+            # ======================================================
+            # 1. Personal Information
+            # ======================================================
+
+            "full_name": forms.TextInput(attrs={
+                "placeholder": "Enter student's full name"
+            }),
+
+            "img": forms.ClearableFileInput(),
+
+            "date_of_birth": forms.DateInput(attrs={
+                "type": "date"
+            }),
+
+            "gender": forms.Select(),
+
+            "blood_group": forms.Select(),
+
+            "religion": forms.TextInput(attrs={
+                "placeholder": "Religion"
+            }),
+
+            "adhaar_number": forms.TextInput(attrs={
+                "placeholder": "12-digit Aadhaar Number"
+            }),
+
+            # ======================================================
+            # 2. Guardian Information
+            # ======================================================
+
+            "father_name": forms.TextInput(attrs={
+                "placeholder": "Father's full name"
+            }),
+
+            "mother_name": forms.TextInput(attrs={
+                "placeholder": "Mother's full name"
+            }),
+
+            "contact": forms.TextInput(attrs={
+                "placeholder": "10-digit Mobile Number"
+            }),
+
+            "father_adhaar": forms.TextInput(attrs={
+                "placeholder": "Father's Aadhaar Number"
+            }),
+
+            "father_voter": forms.TextInput(attrs={
+                "placeholder": "Father's Voter ID (Optional)"
+            }),
+
+            # ======================================================
+            # 3. Address Information
+            # ======================================================
+
+            "village": forms.TextInput(attrs={
+                "placeholder": "Village"
+            }),
+
+            "post_office": forms.TextInput(attrs={
+                "placeholder": "Post Office"
+            }),
+
+            "police_station": forms.TextInput(attrs={
+                "placeholder": "Police Station"
+            }),
+
+            "district": forms.TextInput(attrs={
+                "placeholder": "District"
+            }),
+
+            "state": forms.TextInput(attrs={
+                "placeholder": "State"
+            }),
+
+            "pin": forms.TextInput(attrs={
+                "placeholder": "PIN Code"
+            }),
+
+            # ======================================================
+            # 4. Academic Information
+            # ======================================================
+
+            "student_class": forms.Select(),
+
+            "class_roll": forms.TextInput(attrs={
+                "placeholder": "Class Roll Number"
+            }),
+
+            "previous_class": forms.TextInput(attrs={
+                "placeholder": "Previous Class (Optional)"
+            }),
+
+            "session": forms.TextInput(attrs={
+                "placeholder": "2026-27"
+            }),
         }
+
+
 
 class StudentClassCreate(forms.ModelForm):
 

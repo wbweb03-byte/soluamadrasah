@@ -1,0 +1,211 @@
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Management</title>
+
+<link rel="stylesheet" href="{% static 'css/stu_list.css'%}">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="top">
+
+        <h2>🎓 Student Management</h2>
+
+        <button>Add Student</button>
+
+    </div>
+
+    <form method="GET" class="search-box">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Search Name / Student ID / Admit ID"
+        value="{{ request.GET.q|default:'' }}"
+    >
+
+    <select name="student_class">
+        <option value="">All Classes</option>
+
+        {% for cls in classes %}
+            <option value="{{ cls.id }}"
+                {% if request.GET.student_class == cls.id|stringformat:"s" %}
+                    selected
+                {% endif %}
+            >
+                {{ cls }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <select name="status">
+        <option value="">All Status</option>
+
+        <option value="active"
+            {% if request.GET.status == "active" %}
+                selected
+            {% endif %}
+        >
+            Active
+        </option>
+
+        <option value="inactive"
+            {% if request.GET.status == "inactive" %}
+                selected
+            {% endif %}
+        >
+            Inactive
+        </option>
+    </select>
+
+    <button type="submit">Search</button>
+
+    <a href="{% url 'student_admit' %}">
+        <button type="button">Reset</button>
+    </a>
+
+</form>
+    <div class="bulk-action">
+
+        <label>
+            <input type="checkbox" id="select-all">
+            Select All
+        </label>
+
+        <div class="buttons">
+
+            <button class="blue">Print ID</button>
+
+            <button class="green">Report</button>
+
+            <button type="submit" class="orange">Admit</button>
+
+            <button class="red">TC</button>
+
+            <button class="dark">Export</button>
+
+        </div>
+
+    </div>
+
+    <div class="table-box">
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th><input type="checkbox" id="select-all"></th>
+
+                <th>Photo</th>
+
+                <th>Name</th>
+
+                <th>ID</th>
+
+                <th>Class</th>
+
+                <th>Roll</th>
+
+                <th>Section</th>
+
+                <th>Action</th>
+
+            </tr>
+
+            </thead>
+            
+                {% csrf_token %}
+            <tbody>
+            {% for student in student_list%}
+            <tr>
+
+                <td><input type="checkbox" class="student-checkbox" name="student_ids" value="{{ student.id }}"></td>
+
+                <td><img src="{{student.img.url}}"></td>
+
+                <td>{{student.full_name}}</td>
+
+                <td>{{student.admission_no}}</td>
+
+                <td>{{student.student_class}}</td>
+
+                <td> {{student.class_roll}}</td>
+
+                <td>A</td>
+
+                <td>
+
+                    <div class="buttons">
+
+            <button class="blue">Print ID</button>
+
+            <button class="green">Report</button>
+
+           <a href="{% url "student_admit_card" student.pk%}"> <button class="orange">Admit</button></a>
+
+            <button class="red">TC</button>
+
+            
+
+        </div>
+
+                </td>
+
+            </tr>
+            {% endfor %}
+
+            
+            </tbody>
+             <button  type="submit" class="buttons">
+        Print Selected Admit Card
+    </button>
+
+        </form>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+    <script>
+const selectAll = document.getElementById("select-all");
+const checkboxes = document.querySelectorAll(".student-checkbox");
+
+selectAll.addEventListener("change", function () {
+
+    checkboxes.forEach(function (checkbox) {
+        checkbox.checked = selectAll.checked;
+    });
+
+});
+
+// যদি সব checkbox manually select করা হয়,
+// তাহলে Select All-ও checked হবে
+checkboxes.forEach(function (checkbox) {
+
+    checkbox.addEventListener("change", function () {
+
+        const total = checkboxes.length;
+        const checked = document.querySelectorAll(".student-checkbox:checked").length;
+
+        selectAll.checked = (total === checked);
+
+    });
+
+});
+</script>
+
+
+</body>
+</html>

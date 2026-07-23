@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | Al-Hikmah Academy ERP</title>
+
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A',
+                        'primary-light': '#1E5AC4',
+                        'primary-dark': '#152C6B',
+                        secondary: '#C9A84C',
+                        'secondary-light': '#DDBF6E',
+                        'secondary-dark': '#B8943A',
+                        'surface': '#F8FAFC',
+                        'card': '#FFFFFF',
+                        'readonly-bg': '#F1F5F9',
+                        'readonly-border': '#E2E8F0',
+                        'muted': '#94A3B8',
+                        'text-primary': '#1E293B',
+                        'text-secondary': '#475569',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        'card': '16px',
+                        'field': '10px',
+                        'badge': '20px',
+                        'photo': '50%',
+                    },
+                    boxShadow: {
+                        'card': '0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04), 0 8px 32px rgba(0, 0, 0, 0.03)',
+                        'card-hover': '0 2px 6px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06), 0 16px 40px rgba(0, 0, 0, 0.04)',
+                        'preview-card': '0 0 0 1px rgba(201, 168, 76, 0.15), 0 2px 8px rgba(0, 0, 0, 0.03)',
+                        'button': '0 2px 8px rgba(30, 58, 138, 0.2)',
+                        'button-hover': '0 4px 16px rgba(30, 58, 138, 0.3)',
+                        'sticky-header': '0 2px 20px rgba(0, 0, 0, 0.08)',
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
+
+        /* Input focus glow */
+        input:focus,
+        select:focus,
+        textarea:focus {
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.08), 0 0 0 1px rgba(30, 58, 138, 0.3) !important;
+        }
+
+        /* Readonly field styling */
+        .readonly-field {
+            background-color: #F1F5F9;
+            border: 1px solid #E2E8F0;
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #334155;
+            font-weight: 500;
+            cursor: default;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+        .readonly-field:hover {
+            background-color: #E8EEF4;
+            border-color: #CBD5E1;
+        }
+
+        /* Pulse animation for draft badge */
+        @keyframes subtlePulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.75;
+            }
+        }
+        .badge-pulse {
+            animation: subtlePulse 2.5s ease-in-out infinite;
+        }
+
+        /* Smooth card hover */
+        .card-premium {
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        .card-premium:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06), 0 16px 40px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Section accent line */
+        .section-accent {
+            position: relative;
+            padding-left: 16px;
+        }
+        .section-accent::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            bottom: 2px;
+            width: 4px;
+            background: #C9A84C;
+            border-radius: 2px;
+        }
+
+        /* Button transitions */
+        .btn-primary {
+            transition: all 0.25s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(30, 58, 138, 0.35);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.2);
+        }
+
+        .btn-outline {
+            transition: all 0.25s ease;
+        }
+        .btn-outline:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Photo placeholder */
+        .photo-placeholder {
+            background: linear-gradient(135deg, #E8EEF4 0%, #DCE3EB 50%, #E8EEF4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94A3B8;
+            font-size: 2.5rem;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Preview locked card */
+        .preview-locked {
+            background: linear-gradient(135deg, #FAFBFC 0%, #F8FAFB 100%);
+            border: 1.5px dashed #DCE3EB;
+            position: relative;
+        }
+        .preview-locked::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            background: transparent;
+            pointer-events: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .photo-container {
+                margin: 0 auto 16px;
+                width: 90px;
+                height: 90px;
+            }
+            .readonly-field {
+                padding: 8px 12px;
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-surface font-sans text-text-primary antialiased min-h-screen">
+
+    <!-- ==================== STICKY TOP HEADER ==================== -->
+    <header class="sticky top-0 z-50 bg-primary shadow-sticky-header">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-18">
+                <!-- Left: Logo + School Name -->
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <!-- School Logo Placeholder -->
+                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0 backdrop-blur-sm border border-white/20">
+                        <i class="fa-solid fa-school text-white text-lg sm:text-xl"></i>
+                    </div>
+                    <div class="flex flex-col min-w-0">
+                        <span class="text-white font-bold text-sm sm:text-base lg:text-lg leading-tight truncate tracking-tight">
+                            Al-Hikmah Academy
+                        </span>
+                        <span class="text-white/60 text-[10px] sm:text-xs hidden sm:block tracking-wide">
+                            ERP Management System
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Center: Page Title (hidden on small mobile) -->
+                <div class="hidden md:flex items-center gap-3">
+                    <span class="w-px h-6 bg-white/20 hidden lg:block"></span>
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus text-secondary text-sm lg:text-base"></i>
+                        <span class="text-white font-semibold text-sm lg:text-base tracking-tight">Student Registration</span>
+                    </div>
+                </div>
+
+                <!-- Right: Status Badge + Actions -->
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <!-- Status Badge -->
+                    <span class="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-badge bg-secondary/20 text-secondary-light border border-secondary/30 text-xs sm:text-sm font-semibold tracking-wide badge-pulse">
+                        <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                        Draft
+                    </span>
+                    <!-- Quick action icon -->
+                    <button class="hidden sm:flex items-center justify-center w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-200 text-white/80 hover:text-white" title="Help">
+                        <i class="fa-solid fa-circle-question text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Page Title (visible only on small screens) -->
+    <div class="md:hidden bg-primary-dark px-4 py-3">
+        <div class="flex items-center gap-2 text-white/90">
+            <i class="fa-solid fa-user-plus text-secondary text-sm"></i>
+            <span class="font-semibold text-sm tracking-tight">Student Registration</span>
+        </div>
+    </div>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-5 sm:py-7 lg:py-9 space-y-5 sm:space-y-6 lg:space-y-7">
+
+        <!-- ==================== SECTION 1: STUDENT INFORMATION (READ ONLY) ==================== -->
+        <section class="bg-card rounded-card shadow-card card-premium p-5 sm:p-6 lg:p-8">
+            <!-- Section Header -->
+            <div class="section-accent mb-5 sm:mb-6 lg:mb-7">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-primary/8 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-id-card text-primary text-base sm:text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary tracking-tight">
+                            Student Information
+                        </h2>
+                        <p class="text-xs sm:text-sm text-muted mt-0.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lock text-[10px] sm:text-xs text-muted"></i>
+                            Read-only — Data captured during admission
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content: Photo + Details Grid -->
+            <div class="flex flex-col sm:flex-row gap-5 sm:gap-6 lg:gap-8">
+                <!-- Student Photo -->
+                <div class="flex-shrink-0 flex flex-col items-center gap-3 sm:w-[130px] lg:w-[150px]">
+                    <div class="photo-container w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-photo photo-placeholder overflow-hidden">
+                        <i class="fa-solid fa-user-graduate text-3xl sm:text-4xl lg:text-5xl text-muted/60"></i>
+                    </div>
+                    <span class="text-[10px] sm:text-xs text-muted flex items-center gap-1">
+                        <i class="fa-solid fa-shield-halved text-[9px]"></i> Verified
+                    </span>
+                </div>
+
+                <!-- Readonly Details Grid -->
+                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-4">
+                    <!-- Student Name -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-user text-[10px]"></i> Student Name
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary">Mohammad Aatif Khan</span>
+                    </div>
+
+                    <!-- Father Name -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-user-tie text-[10px]"></i> Father Name
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary">Imran Ahmed Khan</span>
+                    </div>
+
+                    <!-- Mother Name -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-person-dress text-[10px]"></i> Mother Name
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary">Fatima Begum Khan</span>
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-cake-candles text-[10px]"></i> Date of Birth
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary">15 March 2012</span>
+                    </div>
+
+                    <!-- Aadhaar Number -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-fingerprint text-[10px]"></i> Aadhaar Number
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary tracking-wider">XXXX-XXXX-4827</span>
+                    </div>
+
+                    <!-- Student Class -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-graduation-cap text-[10px]"></i> Student Class
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary">7th Standard</span>
+                    </div>
+
+                    <!-- Roll Number -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-hashtag text-[10px]"></i> Roll Number
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary">42</span>
+                    </div>
+
+                    <!-- Admission Date -->
+                    <div class="readonly-field flex flex-col gap-0.5">
+                        <span class="text-[10px] sm:text-xs text-muted uppercase tracking-wider font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-calendar-check text-[10px]"></i> Admission Date
+                        </span>
+                        <span class="text-sm sm:text-base font-semibold text-text-primary">10 April 2024</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TWO-COLUMN LAYOUT: SECTION 2 + SECTION 3 ==================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-7">
+
+            <!-- ==================== SECTION 2: REGISTRATION INFORMATION (EDITABLE) ==================== -->
+            <section class="lg:col-span-7 bg-card rounded-card shadow-card card-premium p-5 sm:p-6 lg:p-8">
+                <!-- Section Header -->
+                <div class="section-accent mb-5 sm:mb-6 lg:mb-7">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-pen-to-square text-secondary-dark text-base sm:text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary tracking-tight">
+                                Registration Information
+                            </h2>
+                            <p class="text-xs sm:text-sm text-muted mt-0.5">
+                                Fill in the details below to complete registration
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editable Form Fields -->
+                <form class="space-y-4 sm:space-y-5 lg:space-y-5" id="registrationForm" onsubmit="return false;">
+                    <!-- Row 1: Contact Number + Blood Group -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                        <!-- Contact Number (Required) -->
+                        <div class="space-y-1.5">
+                            <label for="contactNumber" class="text-sm font-semibold text-text-primary flex items-center gap-1">
+                                <i class="fa-solid fa-phone text-primary text-xs"></i>
+                                Contact Number
+                                <span class="text-red-500 font-bold">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="tel" id="contactNumber" name="contactNumber" placeholder="+91 98765 43210"
+                                class="w-full px-4 py-2.5 sm:py-3 rounded-field border border-gray-200 bg-white text-sm sm:text-base text-text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary/40 transition-all duration-200"
+                                required>
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted/40 text-xs">
+                                    <i class="fa-solid fa-phone-volume"></i>
+                                </span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-muted/70 flex items-center gap-1 validation-hint">
+                                <i class="fa-solid fa-circle-info text-[10px]"></i> Enter a valid 10-digit mobile number
+                            </p>
+                        </div>
+
+                        <!-- Blood Group (Dropdown) -->
+                        <div class="space-y-1.5">
+                            <label for="bloodGroup" class="text-sm font-semibold text-text-primary flex items-center gap-1">
+                                <i class="fa-solid fa-droplet text-red-400 text-xs"></i>
+                                Blood Group
+                            </label>
+                            <div class="relative">
+                                <select id="bloodGroup" name="bloodGroup"
+                                class="w-full px-4 py-2.5 sm:py-3 rounded-field border border-gray-200 bg-white text-sm sm:text-base text-text-primary appearance-none cursor-pointer focus:outline-none focus:border-primary/40 transition-all duration-200">
+                                <option value="" disabled selected>Select Blood Group</option>
+                                <option value="A+">A Positive (A+)</option>
+                                <option value="A-">A Negative (A-)</option>
+                                <option value="B+">B Positive (B+)</option>
+                                <option value="B-">B Negative (B-)</option>
+                                <option value="AB+">AB Positive (AB+)</option>
+                                <option value="AB-">AB Negative (AB-)</option>
+                                <option value="O+">O Positive (O+)</option>
+                                <option value="O-">O Negative (O-)</option>
+                                <option value="Unknown">Unknown</option>
+                            </select>
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted/50 pointer-events-none text-xs">
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Religion + Session -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                    <!-- Religion (Dropdown) -->
+                    <div class="space-y-1.5">
+                        <label for="religion" class="text-sm font-semibold text-text-primary flex items-center gap-1">
+                            <i class="fa-solid fa-star-and-crescent text-secondary-dark text-xs"></i>
+                            Religion
+                        </label>
+                        <div class="relative">
+                            <select id="religion" name="religion"
+                            class="w-full px-4 py-2.5 sm:py-3 rounded-field border border-gray-200 bg-white text-sm sm:text-base text-text-primary appearance-none cursor-pointer focus:outline-none focus:border-primary/40 transition-all duration-200">
+                            <option value="" disabled selected>Select Religion</option>
+                            <option value="Islam">Islam</option>
+                            <option value="Hinduism">Hinduism</option>
+                            <option value="Christianity">Christianity</option>
+                            <option value="Sikhism">Sikhism</option>
+                            <option value="Buddhism">Buddhism</option>
+                            <option value="Jainism">Jainism</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted/50 pointer-events-none text-xs">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Session (Dropdown) -->
+                <div class="space-y-1.5">
+                    <label for="session" class="text-sm font-semibold text-text-primary flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-range text-primary text-xs"></i>
+                        Session
+                    </label>
+                    <div class="relative">
+                        <select id="session" name="session"
+                        class="w-full px-4 py-2.5 sm:py-3 rounded-field border border-gray-200 bg-white text-sm sm:text-base text-text-primary appearance-none cursor-pointer focus:outline-none focus:border-primary/40 transition-all duration-200">
+                        <option value="" disabled selected>Select Academic Session</option>
+                        <option value="2024-2025">2024 – 2025</option>
+                        <option value="2025-2026">2025 – 2026</option>
+                        <option value="2026-2027">2026 – 2027</option>
+                    </select>
+                    <span class="absolute right-3 top-1/2 -translate-y-1/2 text-muted/50 pointer-events-none text-xs">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Previous Class + Additional Remarks -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            <!-- Previous Class -->
+            <div class="space-y-1.5">
+                <label for="previousClass" class="text-sm font-semibold text-text-primary flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left text-muted text-xs"></i>
+                    Previous Class
+                </label>
+                <input type="text" id="previousClass" name="previousClass" placeholder="e.g., 6th Standard"
+                class="w-full px-4 py-2.5 sm:py-3 rounded-field border border-gray-200 bg-white text-sm sm:text-base text-text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary/40 transition-all duration-200">
+            </div>
+
+            <!-- Additional Remarks -->
+            <div class="space-y-1.5">
+                <label for="remarks" class="text-sm font-semibold text-text-primary flex items-center gap-1">
+                    <i class="fa-solid fa-note-sticky text-secondary-dark text-xs"></i>
+                    Additional Remarks
+                </label>
+                <textarea id="remarks" name="remarks" rows="2" placeholder="Any additional notes or remarks..."
+                class="w-full px-4 py-2.5 sm:py-3 rounded-field border border-gray-200 bg-white text-sm sm:text-base text-text-primary placeholder:text-muted/60 focus:outline-none focus:border-primary/40 transition-all duration-200 resize-none"></textarea>
+            </div>
+        </div>
+
+        <!-- Subtle info note -->
+        <div class="flex items-start gap-2 p-3 sm:p-4 rounded-xl bg-blue-50/60 border border-blue-100/80">
+            <i class="fa-solid fa-circle-info text-primary/60 text-sm mt-0.5 flex-shrink-0"></i>
+            <p class="text-xs sm:text-sm text-text-secondary">
+                All fields marked with <span class="text-red-500 font-bold">*</span> are required. Please ensure the contact number is correct for future communications.
+            </p>
+        </div>
+    </form>
+</section>
+
+<!-- ==================== SECTION 3: REGISTRATION PREVIEW ==================== -->
+<aside class="lg:col-span-5 space-y-5 sm:space-y-6">
+    <!-- Preview Card -->
+    <div class="bg-card rounded-card shadow-card card-premium p-5 sm:p-6 lg:p-8 h-fit">
+        <!-- Section Header -->
+        <div class="section-accent mb-5 sm:mb-6 lg:mb-7">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-clipboard-check text-secondary-dark text-base sm:text-lg"></i>
+                </div>
+                <div>
+                    <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary tracking-tight">
+                        Registration Preview
+                    </h2>
+                    <p class="text-xs sm:text-sm text-muted mt-0.5">
+                        Summary of registration details
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Items -->
+        <div class="space-y-4 sm:space-y-5">
+            <!-- Admission Number (Locked) -->
+            <div class="preview-locked rounded-xl p-4 sm:p-5">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs sm:text-sm font-semibold text-muted uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-hashtag text-[10px] sm:text-xs"></i> Admission Number
+                    </span>
+                    <span class="text-[10px] sm:text-xs text-secondary-dark font-semibold flex items-center gap-1 bg-secondary/10 px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-lock text-[9px] sm:text-[10px]"></i> Auto
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xl sm:text-2xl lg:text-3xl font-bold text-muted/40">— — —</span>
+                </div>
+                <p class="text-[10px] sm:text-xs text-muted/60 mt-1.5">
+                    Generated automatically after successful registration
+                </p>
+            </div>
+
+            <!-- Registration Number (Locked) -->
+            <div class="preview-locked rounded-xl p-4 sm:p-5">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs sm:text-sm font-semibold text-muted uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-qrcode text-[10px] sm:text-xs"></i> Registration Number
+                    </span>
+                    <span class="text-[10px] sm:text-xs text-secondary-dark font-semibold flex items-center gap-1 bg-secondary/10 px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-lock text-[9px] sm:text-[10px]"></i> Auto
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xl sm:text-2xl lg:text-3xl font-bold text-muted/40">— — —</span>
+                </div>
+                <p class="text-[10px] sm:text-xs text-muted/60 mt-1.5">
+                    Generated automatically after successful registration
+                </p>
+            </div>
+
+            <!-- Registration Date -->
+            <div class="rounded-xl p-4 sm:p-5 bg-white border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs sm:text-sm font-semibold text-muted uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-calendar-day text-[10px] sm:text-xs"></i> Registration Date
+                    </span>
+                    <span class="text-[10px] sm:text-xs text-green-600 font-semibold flex items-center gap-1 bg-green-50 px-2 py-0.5 rounded-full">
+                        <i class="fa-solid fa-clock text-[9px] sm:text-[10px]"></i> Today
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-lg sm:text-xl lg:text-2xl font-bold text-text-primary" id="registrationDateDisplay">
+                        23 July 2026
+                    </span>
+                </div>
+                <p class="text-[10px] sm:text-xs text-muted/60 mt-1.5">
+                    Current system date will be recorded
+                </p>
+            </div>
+
+            <!-- Current Status -->
+            <div class="rounded-xl p-4 sm:p-5 bg-white border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs sm:text-sm font-semibold text-muted uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-flag-checkered text-[10px] sm:text-xs"></i> Current Status
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-badge bg-secondary/15 text-secondary-dark border border-secondary/30 text-sm sm:text-base font-bold">
+                        <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
+                        Draft
+                    </span>
+                </div>
+                <p class="text-[10px] sm:text-xs text-muted/60 mt-1.5">
+                    Status will update to "Registered" upon submission
+                </p>
+            </div>
+        </div>
+
+        <!-- Info Note -->
+        <div class="mt-5 sm:mt-6 p-4 rounded-xl bg-amber-50/70 border border-amber-100/80 flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-secondary/15 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-lightbulb text-secondary-dark text-sm"></i>
+            </div>
+            <p class="text-xs sm:text-sm text-text-secondary leading-relaxed">
+                <strong class="text-text-primary">Admission Number</strong> and <strong class="text-text-primary">Registration Number</strong> will be generated automatically after successful registration.
+            </p>
+        </div>
+    </div>
+</aside>
+</div>
+
+<!-- ==================== BOTTOM ACTION BUTTONS ==================== -->
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4 pt-2 sm:pt-4">
+    <!-- Cancel Button -->
+    <button type="button"
+    class="btn-outline order-2 sm:order-1 px-6 py-3 sm:px-7 sm:py-3.5 rounded-field border-2 border-gray-200 bg-white text-text-secondary font-semibold text-sm sm:text-base hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-100 transition-all duration-200 flex items-center justify-center gap-2">
+    <i class="fa-solid fa-xmark text-sm"></i>
+    Cancel
+</button>
+
+<!-- Back Button -->
+<button type="button"
+class="btn-outline order-1 sm:order-2 px-6 py-3 sm:px-7 sm:py-3.5 rounded-field border-2 border-gray-200 bg-white text-text-secondary font-semibold text-sm sm:text-base hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:ring-4 focus:ring-gray-100 transition-all duration-200 flex items-center justify-center gap-2">
+<i class="fa-solid fa-arrow-left text-sm"></i>
+Back
+</button>
+
+<!-- Register Student Button (Primary) -->
+<button type="submit" form="registrationForm"
+class="btn-primary order-3 px-8 py-3.5 sm:px-10 sm:py-4 rounded-field bg-primary text-white font-bold text-sm sm:text-base shadow-button hover:shadow-button-hover focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all duration-200 flex items-center justify-center gap-2.5 tracking-wide">
+<i class="fa-solid fa-check-circle text-base sm:text-lg"></i>
+Register Student
+</button>
+</div>
+
+</main>
+
+<!-- ==================== FOOTER (Subtle) ==================== -->
+<footer class="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 pb-6 sm:pb-8 text-center">
+    <p class="text-[11px] sm:text-xs text-muted/50">
+        &copy; 2026 Al-Hikmah Academy ERP. All rights reserved. | Student Registration Module v2.1
+    </p>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+    // Set today's date in the Registration Date preview
+    (function() {
+        const dateElement = document.getElementById('registrationDateDisplay');
+        if (dateElement) {
+            const today = new Date();
+            const options = { day: 'numeric', month: 'long', year: 'numeric' };
+            dateElement.textContent = today.toLocaleDateString('en-IN', options);
+        }
+    })();
+
+    // Simulate Register button click
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const contactInput = document.getElementById('contactNumber');
+        if (contactInput && !contactInput.value.trim()) {
+            // Simple validation feedback
+            contactInput.focus();
+            contactInput.style.borderColor = '#EF4444';
+            contactInput.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.08), 0 0 0 1px rgba(239, 68, 68, 0.3)';
+            setTimeout(() => {
+                contactInput.style.borderColor = '';
+                contactInput.style.boxShadow = '';
+            }, 2000);
+            return;
+        }
+        // Show success alert (demo)
+        alert(
+            '✅ Registration Submitted Successfully!\n\nAdmission Number & Registration Number will be generated shortly.\n\n(This is a demo — no data is actually saved.)'
+            );
+    });
+
+    // Clear validation styling on input
+    document.getElementById('contactNumber').addEventListener('input', function() {
+        this.style.borderColor = '';
+        this.style.boxShadow = '';
+    });
+
+    // Add subtle hover animation to preview locked cards
+    document.querySelectorAll('.preview-locked').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.borderColor = '#C9A84C';
+            this.style.backgroundColor = '#FFFDF7';
+            this.style.transition = 'all 0.3s ease';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.borderColor = '#DCE3EB';
+            this.style.backgroundColor = '';
+        });
+    });
+
+    console.log('📋 Al-Hikmah Academy ERP — Student Registration Page Ready');
+    console.log('🏫 Premium Dashboard UI Loaded Successfully');
+</script>
+</body>
+</html>

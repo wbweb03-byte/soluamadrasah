@@ -1,0 +1,99 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Bulk Admit Card</title>
+
+<link rel="stylesheet"
+href="{% static 'css/admit.css' %}">
+
+<style>
+
+@page{
+
+    size:A4;
+
+    margin:10mm;
+
+}
+
+body{
+
+    margin:0;
+
+}
+
+.page{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10mm;
+
+    page-break-after:always;
+
+}
+
+.admit-wrapper{
+
+    height:132mm;
+
+    page-break-inside:avoid;
+
+}
+
+.print-area{
+
+    display:none;
+
+}
+
+.page{
+    display: flex;
+    flex-direction: column;
+    gap: 10mm;
+    min-height: 277mm;
+    page-break-after: always;
+}
+
+.page:last-child{
+    page-break-after: auto;
+}
+</style>
+
+</head>
+
+<body>
+
+{% for student in students %}
+
+{% if forloop.counter0|divisibleby:2 %}
+
+<div class="page">
+
+{% endif %}
+
+<div class="admit-wrapper">
+
+    {% include "admit/_admit_card.html" %}
+
+</div>
+ 
+{% if forloop.counter|divisibleby:2 or forloop.last %}
+
+</div>
+
+{% endif %}
+
+{% endfor %}
+
+</body>
+
+</html>

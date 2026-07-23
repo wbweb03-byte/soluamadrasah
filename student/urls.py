@@ -77,6 +77,22 @@ urlpatterns = [
     path("routine/add/", views.routine_create, name="routine_create"),
     path("routine/<int:id>/edit/", views.routine_edit, name="routine_edit"),
     path("routine/<int:pk>/delete/", views.routine_delete, name="routine_delete"),
+    path('admit/', views.student_admit, name='student_admit'),
+    path(
+    "student/<int:pk>/admit-card/",
+    views.student_admit_card,
+    name="student_admit_card",
+    ),
+    path(
+    "student/admit/bulk/",
+    views.bulk_admit_card,
+    name="bulk_admit_card",
+    ),
+    path(
+    "student/register/<int:pk>/",
+    views.student_register,
+    name="student_register",
+    ),
 
     # login
 

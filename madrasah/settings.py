@@ -28,9 +28,11 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['soluamadrasah.com',
-                 'www.soluamadrasah.com',
-                 '77.37.44.133']
+ALLOWED_HOSTS = [
+                    'soluamadrasah.com',
+                    'www.soluamadrasah.com',
+                    '77.37.44.133',
+                                     ]
 
 
 CSRF_TRUSTED_ORIGINS = [
@@ -91,16 +93,18 @@ WSGI_APPLICATION = 'madrasah.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": config("DB_NAME"),
-        "USER": config("DB_USER"),
-        "PASSWORD": config("DB_PASSWORD"),
-        "HOST": config("DB_HOST"),
-        "PORT": config("DB_PORT"),
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("DB_NAME"),
+            "USER": config("DB_USER"),
+            "PASSWORD": config("DB_PASSWORD"),
+            "HOST": config("DB_HOST"),
+            "PORT": config("DB_PORT"),
+        }
     }
-}
 
 
 # Password validation

@@ -1,4 +1,5 @@
 from django.db import models
+
 from django.core.validators import RegexValidator
 
 # Create your models here.
@@ -71,50 +72,189 @@ class StudentClass(models.Model):
 
 
 aadhaar_validator = RegexValidator(
-    regex=r'^\d{12}$',
-    message='Aadhaar number must contain exactly 12 digits.'
-)
+        regex=r'^\d{12}$',
+        message='Aadhaar number must contain exactly 12 digits.'
+    )
 
 pin_validator = RegexValidator(
-    regex=r'^\d{6}$',
-    message='PIN code must contain exactly 6 digits.'
-)
+        regex=r'^\d{6}$',
+        message='PIN code must contain exactly 6 digits.'
+    )
+
+phone_validator = RegexValidator(
+            regex=r'^[6-9]\d{9}$',
+            message="Enter a valid 10-digit mobile number."
+        )
+
+contact = models.CharField(
+        max_length=10,
+        unique=True,
+        validators=[phone_validator],
+    )
 
 class Student(models.Model):
+
+    # ======================================================
+    # 1. Personal Information
+    # ======================================================
+
     full_name = models.CharField(max_length=200)
-    img = models.ImageField(upload_to='student/')
 
-    father_name = models.CharField(max_length=200)
-    mother_name = models.CharField(max_length=200)
-
-    adhaar_number = models.CharField(max_length=12, validators=[aadhaar_validator])
+    img = models.ImageField(upload_to="student/")
 
     date_of_birth = models.DateField()
 
-    father_adhaar = models.CharField( max_length=12,validators=[aadhaar_validator])
+    GENDER_CHOICES = [
+        ("male", "Male"),
+        ("female", "Female"),
+    ]
 
-    father_voter = models.CharField(max_length=100, blank=True,null=True)
+    gender = models.CharField(
+        max_length=10,
+        choices=GENDER_CHOICES,
+        default="male",
+    )
+
+    BLOOD_GROUP_CHOICES = [
+        ("A+", "A+"),
+        ("A-", "A-"),
+        ("B+", "B+"),
+        ("B-", "B-"),
+        ("AB+", "AB+"),
+        ("AB-", "AB-"),
+        ("O+", "O+"),
+        ("O-", "O-"),
+    ]
+
+    blood_group = models.CharField(
+        max_length=3,
+        choices=BLOOD_GROUP_CHOICES,
+        blank=True,
+        null=True,
+    )
+
+    religion = models.CharField(
+        max_length=30,
+        default="Islam",
+    )
+
+    adhaar_number = models.CharField(
+        max_length=12,
+        validators=[aadhaar_validator],
+    )
+
+    # ======================================================
+    # 2. Guardian Information
+    # ======================================================
+
+    father_name = models.CharField(max_length=200)
+
+    mother_name = models.CharField(max_length=200)
+
+    contact = models.CharField(
+        max_length=10,
+        unique=True,
+        blank=True,
+        null=True,
+        validators=[phone_validator],
+    )
+
+    father_adhaar = models.CharField(
+        max_length=12,
+        validators=[aadhaar_validator],
+    )
+
+    father_voter = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+
+    # ======================================================
+    # 3. Address Information
+    # ======================================================
 
     village = models.CharField(max_length=100)
+
     post_office = models.CharField(max_length=100)
+
     police_station = models.CharField(max_length=100)
+
     district = models.CharField(max_length=100)
+
     state = models.CharField(max_length=100)
 
-    pin = models.CharField(max_length=6, validators=[pin_validator])
+    pin = models.CharField(
+        max_length=6,
+        validators=[pin_validator],
+    )
 
-    admission_date = models.DateField(auto_now_add=True)
+    # ======================================================
+    # 4. Academic Information
+    # ======================================================
 
-    student_class = models.ForeignKey("StudentClass",  on_delete=models.CASCADE)
+    student_class = models.ForeignKey(
+        "StudentClass",
+        on_delete=models.CASCADE,
+    )
+
     class_roll = models.CharField(max_length=10)
 
-    previous_class = models.CharField(max_length=10,blank=True,null=True)
+    previous_class = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True,
+    )
 
-    created_at = models.DateTimeField(auto_now_add=True)
+    session = models.CharField(
+        max_length=9,
+        default="2026-27",
+    )
+
+    # ======================================================
+    # 5. Registration & System Information
+    # ======================================================
+
+    admission_no = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=True,
+        null=True,
+    )
+
+    registration_no = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=True,
+        null=True,
+    )
+
+    admission_date = models.DateField(
+        auto_now_add=True,
+    )
+
+    STATUS_CHOICES = [
+        ("draft", "Draft"),
+        ("registered", "Registered"),
+        ("inactive", "Inactive"),
+        ("tc", "Transfer Certificate"),
+    ]
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="draft",
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+    )
 
     def __str__(self):
         return self.full_name
     
+   
+
 
 class GalleryImage(models.Model):
     title = models.CharField(max_length=100, blank=True)

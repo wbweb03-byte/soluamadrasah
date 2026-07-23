@@ -1,0 +1,194 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admit Card</title>
+
+    <link rel="stylesheet" href="{% static 'css/admit.css'%}">
+
+</head>
+
+<body>
+
+    <div class="page">
+
+        <!-- Card 1 -->
+
+        <div class="card">
+
+            <!-- Decorative Border -->
+<!-- 
+            <div class="corner tl"></div>
+            <div class="corner tr"></div>
+            <div class="corner bl"></div>
+            <div class="corner br"></div> -->
+
+            <!-- Watermark -->
+
+            <div class="watermark">
+                SOLUA MADRASHA 
+            </div>
+
+            <!-- Header -->
+
+            <header>
+
+                <div class="logo">
+
+                    <img src="{% static "src/madrasah_logo.jpeg"%}">
+
+                </div>
+
+                <div class="title">
+
+                    <h1>SOLUA MADRASAH DARUL QURAN</h1>
+
+                    <h2>ADMIT CARD</h2>
+
+                    <p>Half-Yearly Examination For The Session : 2026 - 2027</p>
+
+                </div>
+
+            </header>
+
+            <!-- Candidate -->
+
+            <section class="candidate">
+
+                <div class="info">
+
+                    <table>
+
+                        <tr>
+                            <td>Admit No.</td>
+                            <td>:</td>
+                            <td>{{student.admission_no}}  </td>
+                        </tr>
+                        <tr>
+                            <td>Reg. No.</td>
+                            <td>:</td>
+                            <td>{{student.registration_no}}  </td>
+                        </tr>
+
+                        <tr>
+                            <td>Candidate</td>
+                            <td>:</td>
+                            <td>{{student.full_name}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Father</td>
+                            <td>:</td>
+                            <td>{{student.father_name}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Date of Birth</td>
+                            <td>:</td>
+                            <td>{{student.date_of_birth}}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Centre</td>
+                            <td>:</td>
+                            <td>Solua Madrasah Darul Quran</td>
+                        </tr>
+
+                        
+
+                    </table>
+
+                </div>
+
+                <div class="photo-area">
+
+                    <div class="photo">
+
+                        <img src="{{student.img.url}}">
+
+                    </div>
+
+                    <div class="candidate-sign">
+
+                        Candidate Signature
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Exam Period -->
+
+            <section class="exam-date">
+
+                <h3>EXAMINATION PERIOD  -  </h3>
+
+                <div class="date-box">
+
+                    <b>From :</b> 24 July 2026
+
+                    
+
+                    <b>To :</b> 02 August 2026
+
+                </div>
+
+            </section>
+
+            <!-- Instructions -->
+
+            <section class="instruction">
+
+                <h3>Important Instructions</h3>
+                <div class="new_line">
+                <ul>
+
+
+                    <li>Electronic devices are not allowed inside the examination hall.</li>
+
+                    <li>Follow all instructions issued by the examination authority.</li>
+
+                </ul>
+                <ul>
+                    <li>Reach the examination centre at least 30 minutes before reporting time.</li>
+                    <li>Carry this Admit Card on every examination day.</li>
+
+                    
+
+
+                </ul>
+                </div>
+            </section>
+
+            <!-- Footer -->
+
+            <footer>
+
+               
+
+                <div class="authority">
+
+                    Controller of Examination
+
+                </div>
+
+            </footer>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+    <script src="admid.js"></script>
+
+</body>
+
+</html>

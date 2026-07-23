@@ -7,6 +7,31 @@
     <title>Student List - Student Management System</title>
     <!-- Tailwind CSS via your compiled output.css (ensure Tailwind directives are present) -->
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <style>
+    .btn-register{
+    display:inline-block;
+    padding:8px 6px;
+    background:#16a34a;
+    color:#fff;
+    text-decoration:none;
+    border-radius:6px;
+    font-size:14px;
+    font-weight:600;
+    }
+
+    .btn-register:hover{
+        background:#15803d;
+    }
+
+    .btn-view{
+        display:inline-block;
+        padding:8px 16px;
+        background:#2563eb;
+        color:#fff;
+        text-decoration:none;
+        border-radius:6px;
+    }
+    </style>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -49,7 +74,7 @@
         <!-- Statistics Cards Grid -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <!-- Total Students Card -->
-            <div class="stats-card bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg text-white p-5">
+           A <div class="stats-card bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg text-white p-5">
                 <div class="flex justify-between items-center">
                     <div>
                         <p class="text-blue-100 text-sm font-medium">Total Students</p>
@@ -195,8 +220,22 @@
                                             class="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1.5 rounded-md transition" title="Delete">
                                         <i class="fas fa-trash"></i>
                                     </button>
+
+                                    {% if student.status == "draft" %}
+
+                                <a  href="{% url 'student_register'  student.pk%}" class="btn-register">
+                                    📝 
+                                </a>
+
+                            {% elif student.status == "registered" %}
+
+                                <a href="#" class="btn-view">
+                                    👁 
+                                </a>
+
+                            {% endif %}
                                 </div>
-                            </td>
+                            </td>   
                         </tr>
                         {% empty %}
                         <tr>

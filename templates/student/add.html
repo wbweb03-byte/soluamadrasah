@@ -1,99 +1,557 @@
-{% extends "admin/base.html" %}
 {% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | School ERP</title>
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E3A8A',
+                        'primary-dark': '#152C6B',
+                        secondary: '#C9A84C',
+                    },
+                    fontFamily: { 'sans': ['Inter', 'system-ui', 'sans-serif'] },
+                    borderRadius: { 'card': '12px', 'field': '8px' },
+                    boxShadow: { 'card': '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)' }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F8FAFC; }
+        .step-circle {
+            width: 36px; height: 36px; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem;
+        }
+        .step-active { background-color: #1E3A8A; color: white; }
+        .step-completed { background-color: white; border: 2px solid #16A34A; color: #16A34A; }
+        .step-upcoming { background-color: #F1F5F9; color: #94A3B8; }
+        .step-line { height: 2px; flex: 1; background-color: #E2E8F0; margin: 0 8px; }
+        .step-line.completed { background-color: #16A34A; }
+        input:focus, select:focus, textarea:focus {
+            border-color: #1E3A8A !important; box-shadow: 0 0 0 3px rgba(30,58,138,0.1) !important; outline: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4">
 
-{% block content %}
-<div class="min-h-screen bg-gray-50 py-8">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Card -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-blue-700 to-blue-600 px-6 py-4">
-                <h4 class="text-xl font-semibold text-white tracking-tight">
-                    Add New Student
-                </h4>
-                <p class="text-blue-100 text-sm mt-1">
-                    Fill in the student details below
-                </p>
+<div class="max-w-5xl mx-auto">
+
+    {% if success %}
+    <!-- ========== SUCCESS SCREEN ========== -->
+    <div class="bg-white rounded-card shadow-card p-8 text-center">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
+            <i class="fa-solid fa-check text-3xl text-green-600"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">Registration Completed Successfully</h2>
+        <p class="text-gray-500 mb-6">The student has been registered into the system.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 max-w-md mx-auto">
+            <div class="bg-gray-50 rounded p-3">
+                <span class="text-xs text-gray-500 uppercase">Registration No.</span>
+                <p class="font-bold text-primary">{{ registration_number }}</p>
             </div>
+            <div class="bg-gray-50 rounded p-3">
+                <span class="text-xs text-gray-500 uppercase">Admission No.</span>
+                <p class="font-bold text-primary">{{ admission_number }}</p>
+            </div>
+            <div class="bg-gray-50 rounded p-3">
+                <span class="text-xs text-gray-500 uppercase">Student ID</span>
+                <p class="font-bold text-primary">{{ student_id }}</p>
+            </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <button onclick="window.print()" class="px-6 py-2.5 bg-white border border-gray-300 rounded-field text-gray-700 font-medium hover:bg-gray-50 transition">
+                <i class="fa-solid fa-print mr-2"></i> Print Registration
+            </button>
+            <a href="{% url 'student_profile' student_id %}" class="px-6 py-2.5 bg-primary text-white rounded-field font-medium hover:bg-primary-dark transition">
+                <i class="fa-solid fa-user mr-2"></i> Go to Profile
+            </a>
+            <a href="{% url 'student_admission' %}" class="px-6 py-2.5 bg-white border border-gray-300 rounded-field text-gray-700 font-medium hover:bg-gray-50 transition">
+                <i class="fa-solid fa-plus mr-2"></i> Register Another
+            </a>
+        </div>
+    </div>
 
-            <!-- Body -->
-            <div class="p-6">
-                <!-- Messages -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="mb-6 p-4 rounded-lg border-l-4 
-                            {% if message.tags == 'success' %}
-                                bg-green-50 border-green-500 text-green-800
-                            {% elif message.tags == 'error' %}
-                                bg-red-50 border-red-500 text-red-800
-                            {% elif message.tags == 'warning' %}
-                                bg-yellow-50 border-yellow-500 text-yellow-800
-                            {% else %}
-                                bg-blue-50 border-blue-500 text-blue-800
-                            {% endif %}
-                        ">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
+    {% else %}
+    <!-- ========== REGISTRATION WIZARD ========== -->
 
-                <!-- Form -->
-                <form method="post" enctype="multipart/form-data" class="space-y-6">
-                    {% csrf_token %}
-                    
-                    {% for field in students %}
-                        <div class="space-y-1">
-                            <!-- Label -->
-                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
-                                {{ field.label }}
-                                {% if field.field.required %}
-                                    <span class="text-red-500 ml-1">*</span>
-                                {% endif %}
-                            </label>
-
-                            <!-- Field with Tailwind classes using widget-tweaks -->
-                            {% if field.field.widget.input_type == 'checkbox' %}
-                                <div class="flex items-center">
-                                    {{ field|add_class:"h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" }}
-                                    <label for="{{ field.id_for_label }}" class="ml-2 text-sm text-gray-600">
-                                        {{ field.label }}
-                                    </label>
-                                </div>
-                            {% elif field.field.widget.input_type == 'select' %}
-                                {{ field|add_class:"mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
-                            {% else %}
-                                {{ field|add_class:"mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" }}
-                            {% endif %}
-
-                            <!-- Help text -->
-                            {% if field.help_text %}
-                                <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
-                            {% endif %}
-
-                            <!-- Errors -->
-                            {% for error in field.errors %}
-                                <p class="text-sm text-red-600 mt-1">{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-
-                    <!-- Buttons -->
-                    <div class="flex gap-3 pt-4">
-                        <button type="submit" 
-                                class="inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                            </svg>
-                            Submit
-                        </button>
-                        <a href="{% url 'student_list' %}" 
-                           class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-                            Cancel
-                        </a>
-                    </div>
-                </form>
+    <!-- Card 1: Progress Steps -->
+    <div class="bg-white rounded-card shadow-card p-5 mb-5">
+        <div class="flex items-center justify-between">
+            <!-- Step 1 -->
+            <div class="flex items-center flex-1">
+                <span id="step1-circle" class="step-circle step-active">1</span>
+                <span class="ml-2 text-sm font-medium text-gray-800 hidden sm:inline">Personal</span>
+                <div id="line1" class="step-line"></div>
+            </div>
+            <!-- Step 2 -->
+            <div class="flex items-center flex-1">
+                <span id="step2-circle" class="step-circle step-upcoming">2</span>
+                <span class="ml-2 text-sm font-medium text-gray-800 hidden sm:inline">Guardian</span>
+                <div id="line2" class="step-line"></div>
+            </div>
+            <!-- Step 3 -->
+            <div class="flex items-center">
+                <span id="step3-circle" class="step-circle step-upcoming">3</span>
+                <span class="ml-2 text-sm font-medium text-gray-800 hidden sm:inline">Address</span>
             </div>
         </div>
     </div>
+
+    <!-- Card 2: Form Section -->
+    <div class="bg-white rounded-card shadow-card p-6">
+        <form id="registrationForm" method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            <!-- ===== STEP 1: PERSONAL INFORMATION ===== -->
+            <div id="step1-content" class="step-content">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-user text-primary"></i> Personal Information
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Photo -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Student Photograph</label>
+                        <div class="flex items-center gap-4">
+                            <img id="photoPreview" class="w-20 h-20 rounded-full object-cover border" src="{% if form.img.value %}{{ form.img.value.url }}{% else %}#{% endif %}" alt="Preview" onerror="this.style.display='none'">
+                            {% render_field form.img class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:font-semibold file:bg-primary/10 file:text-primary" id="id_img" %}
+                        </div>
+                        {% if form.img.errors %}<p class="text-xs text-red-600 mt-1">{{ form.img.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Full Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Student Full Name <span class="text-red-500">*</span></label>
+                        {% render_field form.full_name class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.full_name.errors %}<p class="text-xs text-red-600 mt-1">{{ form.full_name.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth <span class="text-red-500">*</span></label>
+                        {% render_field form.date_of_birth class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.date_of_birth.errors %}<p class="text-xs text-red-600 mt-1">{{ form.date_of_birth.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Gender -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Gender <span class="text-red-500">*</span></label>
+                        {% render_field form.gender class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.gender.errors %}<p class="text-xs text-red-600 mt-1">{{ form.gender.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Blood Group -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Blood Group</label>
+                        {% render_field form.blood_group class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.blood_group.errors %}<p class="text-xs text-red-600 mt-1">{{ form.blood_group.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Religion -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Religion</label>
+                        {% render_field form.religion class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.religion.errors %}<p class="text-xs text-red-600 mt-1">{{ form.religion.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Aadhaar -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Student Aadhaar Number</label>
+                        {% render_field form.adhaar_number class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.adhaar_number.errors %}<p class="text-xs text-red-600 mt-1">{{ form.adhaar_number.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Current Class -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Current Class <span class="text-red-500">*</span></label>
+                        {% render_field form.student_class class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.student_class.errors %}<p class="text-xs text-red-600 mt-1">{{ form.student_class.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <!-- Class Roll -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Class Roll <span class="text-red-500">*</span></label>
+                        {% render_field form.class_roll class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.class_roll.errors %}<p class="text-xs text-red-600 mt-1">{{ form.class_roll.errors.0 }}</p>{% endif %}
+                    </div>
+                </div>
+                <div class="flex justify-end mt-6">
+                    <button type="button" onclick="nextStep(1)" class="px-6 py-2.5 bg-primary text-white rounded-field font-medium hover:bg-primary-dark transition">
+                        Save & Continue <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== STEP 2: GUARDIAN INFORMATION ===== -->
+            <div id="step2-content" class="step-content hidden">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-people-roof text-primary"></i> Guardian Information
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Father's Full Name <span class="text-red-500">*</span></label>
+                        {% render_field form.father_name class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.father_name.errors %}<p class="text-xs text-red-600 mt-1">{{ form.father_name.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mother's Full Name <span class="text-red-500">*</span></label>
+                        {% render_field form.mother_name class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.mother_name.errors %}<p class="text-xs text-red-600 mt-1">{{ form.mother_name.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number <span class="text-red-500">*</span></label>
+                        {% render_field form.contact class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.contact.errors %}<p class="text-xs text-red-600 mt-1">{{ form.contact.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Father's Aadhaar Number</label>
+                        {% render_field form.father_adhaar class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.father_adhaar.errors %}<p class="text-xs text-red-600 mt-1">{{ form.father_adhaar.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Father's Voter ID</label>
+                        {% render_field form.father_voter class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                        {% if form.father_voter.errors %}<p class="text-xs text-red-600 mt-1">{{ form.father_voter.errors.0 }}</p>{% endif %}
+                    </div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button type="button" onclick="previousStep(2)" class="px-6 py-2.5 bg-white border border-gray-300 rounded-field text-gray-700 font-medium hover:bg-gray-50 transition">
+                        <i class="fa-solid fa-arrow-left mr-1 text-xs"></i> Previous
+                    </button>
+                    <button type="button" onclick="nextStep(2)" class="px-6 py-2.5 bg-primary text-white rounded-field font-medium hover:bg-primary-dark transition">
+                        Save & Continue <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== STEP 3: ADDRESS INFORMATION ===== -->
+            <div id="step3-content" class="step-content hidden">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot text-primary"></i> Address Information
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Village <span class="text-red-500">*</span></label>
+                        {% render_field form.village class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Post Office <span class="text-red-500">*</span></label>
+                        {% render_field form.post_office class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Police Station</label>
+                        {% render_field form.police_station class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">District <span class="text-red-500">*</span></label>
+                        {% render_field form.district class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">State <span class="text-red-500">*</span></label>
+                        {% render_field form.state class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">PIN Code <span class="text-red-500">*</span></label>
+                        {% render_field form.pin class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Previous Class</label>
+                        {% render_field form.previous_class class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Academic Session <span class="text-red-500">*</span></label>
+                        {% render_field form.session class="w-full px-3 py-2 rounded-field border border-gray-300 text-sm focus:outline-none" %}
+                    </div>
+                </div>
+                <div class="flex justify-between mt-6">
+                    <button type="button" onclick="previousStep(3)" class="px-6 py-2.5 bg-white border border-gray-300 rounded-field text-gray-700 font-medium hover:bg-gray-50 transition">
+                        <i class="fa-solid fa-arrow-left mr-1 text-xs"></i> Previous
+                    </button>
+                    <button type="submit" class="px-6 py-2.5 bg-primary text-white rounded-field font-medium hover:bg-primary-dark transition">
+                        Complete Registration <i class="fa-solid fa-check ml-1"></i>
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    {% endif %}
+
 </div>
-{% endblock %}
+
+<script>
+    const form = document.getElementById("registrationForm");
+
+const steps = [
+    "step1",
+    "step2",
+    "step3"
+];
+
+let currentStep = 1;
+
+const totalSteps = steps.length;
+
+
+/* ===========================
+   Update Step UI
+=========================== */
+
+function updateUI() {
+
+    // Hide all
+    steps.forEach(step => {
+        document
+            .getElementById(step + "-content")
+            .classList.add("hidden");
+    });
+
+    // Show current
+    document
+        .getElementById("step" + currentStep + "-content")
+        .classList.remove("hidden");
+
+
+    /* ======================
+       Step Circles
+    ======================= */
+
+    for (let i = 1; i <= totalSteps; i++) {
+
+        const circle = document.getElementById("step" + i + "-circle");
+        const line = document.getElementById("line" + i);
+
+        circle.classList.remove(
+            "step-active",
+            "step-completed",
+            "step-upcoming"
+        );
+
+        if (i < currentStep) {
+
+            circle.classList.add("step-completed");
+
+            circle.innerHTML =
+                '<i class="fa-solid fa-check text-xs"></i>';
+
+            if (line)
+                line.classList.add("completed");
+
+        }
+
+        else if (i === currentStep) {
+
+            circle.classList.add("step-active");
+
+            circle.innerHTML = i;
+
+        }
+
+        else {
+
+            circle.classList.add("step-upcoming");
+
+            circle.innerHTML = i;
+
+            if (line)
+                line.classList.remove("completed");
+
+        }
+
+    }
+
+    // Scroll to top of form
+
+    form.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+/* ===========================
+   Validate Current Step
+=========================== */
+
+function validateStep(stepNumber) {
+
+    const step = document.getElementById(
+        "step" + stepNumber + "-content"
+    );
+
+    const fields = step.querySelectorAll(
+        "input, select, textarea"
+    );
+
+    let valid = true;
+
+    fields.forEach(field => {
+
+        if (
+            field.hasAttribute("required")
+        ) {
+
+            const value = field.value.trim();
+
+            if (value === "") {
+
+                field.classList.add(
+                    "border-red-500",
+                    "ring-2",
+                    "ring-red-300"
+                );
+
+                valid = false;
+
+            }
+
+            else {
+
+                field.classList.remove(
+                    "border-red-500",
+                    "ring-2",
+                    "ring-red-300"
+                );
+
+            }
+
+        }
+
+    });
+
+    return valid;
+
+}
+
+
+/* ===========================
+   Next
+=========================== */
+
+window.nextStep = function(step) {
+
+    if (!validateStep(step)) {
+
+        alert(
+            "Please complete all required fields."
+        );
+
+        return;
+
+    }
+
+    if (currentStep < totalSteps) {
+
+        currentStep++;
+
+        updateUI();
+
+    }
+
+};
+
+
+/* ===========================
+   Previous
+=========================== */
+
+window.previousStep = function(step) {
+
+    if (currentStep > 1) {
+
+        currentStep--;
+
+        updateUI();
+
+    }
+
+};
+
+
+/* ===========================
+   Remove Error While Typing
+=========================== */
+
+form.querySelectorAll("input,select,textarea")
+.forEach(field => {
+
+    field.addEventListener("input", function () {
+
+        this.classList.remove(
+            "border-red-500",
+            "ring-2",
+            "ring-red-300"
+        );
+
+    });
+
+});
+
+
+/* ===========================
+   Photo Preview
+=========================== */
+
+const imageInput =
+    document.getElementById("id_img");
+
+const preview =
+    document.getElementById("photoPreview");
+
+if (imageInput) {
+
+    imageInput.addEventListener("change", function(e){
+
+        const file = e.target.files[0];
+
+        if(file){
+
+            preview.src =
+                URL.createObjectURL(file);
+
+            preview.style.display = "block";
+
+        }
+
+    });
+
+}
+
+
+/* ===========================
+   Submit
+=========================== */
+
+form.addEventListener("submit", function(e){
+
+    if(!validateStep(currentStep)){
+
+        e.preventDefault();
+
+        return;
+
+    }
+
+});
+
+
+/* ===========================
+   Start
+=========================== */
+
+updateUI();
+</script>
+
+</body>
+</html>
