@@ -75,7 +75,7 @@ urlpatterns = [
      # routine 
     path("routine/", views.routine_list, name="routine_list"),
     path("routine/add/", views.routine_create, name="routine_create"),
-    path("routine/<int:id>/edit/", views.routine_edit, name="routine_edit"),
+    # path("routine/<int:id>/edit/", views.routine_edit, name="routine_edit"),
     path("routine/<int:pk>/delete/", views.routine_delete, name="routine_delete"),
     path('admit/', views.student_admit, name='student_admit'),
     path(
@@ -98,5 +98,9 @@ urlpatterns = [
 
     path("login/", views.user_login, name="login_view"),
     path("logout/", views.user_logout, name="logout"),
+    path("student_dash/", views.student_dash, name="student_dash"),
+    path("teacher_dash/", views.teacher_dash, name="teacher_dash"),
+
+    path('marksheet/<int:student_id>/', views.add_marks, name='mark_add'),
 
 ]

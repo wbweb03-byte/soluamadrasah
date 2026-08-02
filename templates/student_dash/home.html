@@ -1,0 +1,105 @@
+
+{% extends 'student_dash/base.html' %}
+{%load static %}
+{% block title %}
+Home
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/student_dash/home.css' %}">
+{% endblock %}
+{% block content %}
+
+    <div id="container">
+            <div id="card">
+                    <div class="content1">
+                        <div class="img">
+                            <img src="stu.jfif" alt="">
+                        </div>
+                    </div>
+
+                <div class="content3">
+                        <div class="content2">
+                            <div class="title">Personal Information</div>
+                            <div class="info">
+                                <span>Name</span>
+                                <span>Md. Abdullah</span>
+                                <span>Date of Birth</span>
+                                <span>15 Jan 2018</span>
+                                <span>Gender</span>
+                                <span>Male</span>
+
+                                <span>Mobile</span>
+                                <span>9876543210</span>
+                            
+                            </div>
+                        </div>
+
+                <div class="content2">
+                    <div class="title">Academic Information</div>
+                    <div class="info">
+                       <span>Admission No</span>
+                         <span>SMDQ-2026-No-0001</span>
+                          <span>Registration No</span>
+                            <span>STU1977-0001</span>
+                            <span>Class</span>
+                            <span>Class II</span>
+                            <span>Roll No</span>
+                            <span>15</span>
+
+
+                    </div>
+                </div>
+
+                <div class="content2">
+                    <div class="title">Guardian & Address</div>
+                    <div class="info">
+                        <span>Blood Group</span>
+                        <span>B+</span>
+
+                        <span>Father's Name</span>
+                        <span>Md. Rahim</span>
+
+                        <span>Mother's Name</span>
+                        <span>Mrs. Salma</span>
+
+                        <span>Mobile</span>
+                        <span>9876543210</span>
+
+                        <span>Village</span>
+                        <span>Rampur</span>
+
+                        <span>Post Office</span>
+                        <span>Rampur</span>
+
+                        <span>Police Station</span>
+                        <span>Harishchandrapur</span>
+
+                        <span>District</span>
+                        <span>Malda</span>
+
+                        <span>State</span>
+                        <span>West Bengal</span>
+
+                        <span>PIN Code</span>
+                        <span>732125</span>
+                    </div>
+
+                    
+                </div>
+
+                    
+                    <div id="button-box">
+                        <button id="application">Print Application</button>
+                        <button id="repoert">Report card</button>
+                        <button id="admit">Admit card</button>
+                    </div>
+            </div>
+
+            
+        </div>
+    
+      
+    
+
+  {% endblock %}

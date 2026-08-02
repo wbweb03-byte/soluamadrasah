@@ -22,7 +22,7 @@ from .models import (Blog, Notice,
     MadrasahDocuments,
     PrincipalMessage,
     MadrasahInformation,
-    Routine
+    Routine,Student, Subject, StudentMark
        )
 from django.contrib import messages
 from django.db.models import Q
@@ -39,22 +39,62 @@ from .utils import (
 # Create your views here.
 
 # Login 
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+
 def user_login(request):
+
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
 
-        user = authenticate(
-            request,
-            username=username,
-            password=password
-        )
+        user_type = request.POST.get("user_type")
 
-        if user:
-            login(request, user)
-            return redirect("dashboard")
+        if user_type == "student":
 
-    return render(request, "admin/login.html")
+            registration_no = request.POST.get("username")
+            dob = request.POST.get("date_of_birth")
+            return redirect("student_dash")
+
+            
+
+        elif user_type == "teacher":
+
+            name = request.POST.get("username")
+            contact  = request.POST.get("contact")
+            return redirect("teacher_dash")
+
+
+        else:
+
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+
+            
+            user = authenticate(
+                request,
+                username=username,
+                password=password
+            )
+
+            if user is not None:
+                login(request, user)
+                return redirect("dashboard")
+            else:
+                return render(request, "login_new/login.html", {
+                    "error": "Invalid username or password"
+                })
+
+            
+            
+    return render(request, "login_new/login.html")
+
+
+
+def student_dash(request):
+    return render(request, 'student_dash/home.html')
+
+def teacher_dash(request):
+    return render(request, 'teacher_dash/dashboard.html')
+
 
 def user_logout(request):
     logout(request)
@@ -197,7 +237,7 @@ def notice_delete(request, id):
 
 
 #blog 
-
+@login_required
 def teacher_list(request):
     teachers = Teacher.objects.all()
     return render(request, 'teacher/t_list.html',{'teachers':teachers} )
@@ -313,15 +353,18 @@ def student_list(request):
 @login_required
 def student_update(request, id):
     student = get_object_or_404(Student, id=id)
-    if request.method =="POST":
-        students = StudentForm(request.POST, request.FILES, instance=student)
-        if students.is_valid():
-            students.save()
+
+    if request.method == "POST":
+        form = StudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
             return redirect("student_list")
     else:
-         students = StudentForm(instance=student)
-    
-    return render(request, "student/add.html", {"students":students, "student":student })
+        form = StudentForm(instance=student)
+
+    return render(request, "student/add.html", {
+        "form": form,
+    })
 
 
 @login_required
@@ -344,19 +387,29 @@ def student_add(request):
 
 #class
 @login_required
+
 def class_add(request):
+
     if request.method == "POST":
-        form = StudentClassCreate(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Class added successfully!')
-            return redirect('class_add')
+
+        name = request.POST.get("name", "").strip().upper()
+
+        if not name:
+            messages.error(request, "Class name is required.")
+
+        elif StudentClass.objects.filter(name__iexact=name).exists():
+            messages.error(request, f'"{name}" already exists.')
+
         else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        form = StudentClassCreate()
-    
-    return render(request, 'classes/c_add.html', {'form': form})
+            StudentClass.objects.create(name=name)
+            messages.success(request, f'"{name}" added successfully.')
+            return redirect("class_add")
+
+    context = {
+        "classes": StudentClass.objects.values("name")
+    }
+
+    return render(request, "classes/c_add.html", context)
 
 
 # image add
@@ -372,6 +425,8 @@ def image_add(request):
         form = GalleryImageForm()
 
     return render(request, "image/image_add.html", {"form": form})
+
+
 @login_required
 def image_update(request, id):
     image = get_object_or_404(GalleryImage, id=id)
@@ -534,51 +589,81 @@ def routine_list(request):
 
 @login_required
 def routine_create(request):
-    RoutineFormSet = modelformset_factory(
-        Routine,
-        form=RoutineForm,
-        extra=1,
-        can_delete=True
-    )
 
     if request.method == "POST":
-        formset = RoutineFormSet(
-            request.POST,
-            queryset=Routine.objects.none()
-        )
 
-        if formset.is_valid():
-            formset.save()
-            messages.success(request, "Routines added successfully.")
-            return redirect("routine_list")
+        class_id = request.POST.get("student_class")
 
-    else:
-        formset = RoutineFormSet(
-            queryset=Routine.objects.none()
-        )
+        subjects = request.POST.getlist("subject[]")
+        teachers = request.POST.getlist("teacher[]")
+        periods = request.POST.getlist("period[]")
 
-    return render(request,"routine/rotine.html", {"formset": formset})
+        for subject_name, teacher_id, period in zip(subjects, teachers, periods):
+
+            if not subject_name.strip():
+                continue
+
+            # Subject তৈরি করবে (আগে থাকলে সেটাই নেবে)
+            subject, created = Subject.objects.get_or_create(
+                student_class_id=class_id,
+                name=subject_name.strip()
+            )
+
+            Routine.objects.create(
+                student_class_id=class_id,
+                subject=subject,
+                teacher_id=teacher_id,
+                period=period,
+            )
+
+        messages.success(request, "Routine added successfully.")
+        return redirect("routine_list")
+
+    return render(request, "routine/assign.html", {
+        "classes": StudentClass.objects.all(),
+        "teachers": Teacher.objects.all(),
+    })
 
 
-@login_required
-def routine_edit(request, id):
-    routine = get_object_or_404(Routine, id=id)
 
-    if request.method == "POST":
-        form = RoutineForm(request.POST, instance=routine)
+# @login_required
+# def routine_edit(request, id):
 
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Routine updated successfully.")
-            return redirect("routine_list")
+#     routine = get_object_or_404(Routine, id=id)
 
-    else:
-        form = RoutineForm(instance=routine)
+#     if request.method == "POST":
 
-    return render(request,"routine/rotine.html",{"form": form})
+#         class_id = request.POST.get("student_class")
+#         subject_name = request.POST.get("subject")
+#         teacher_id = request.POST.get("teacher")
+#         period = request.POST.get("period")
 
-@login_required
+#         subject, created = Subject.objects.get_or_create(
+#             student_class_id=class_id,
+#             name=subject_name.strip()
+#         )
+
+#         routine.student_class_id = class_id
+#         routine.subject = subject
+#         routine.teacher_id = teacher_id
+#         routine.period = period
+
+#         routine.save()
+
+#         messages.success(request, "Routine updated successfully.")
+#         return redirect("routine_list")
+
+#     context = {
+#         "routine": routine,
+#         "classes": StudentClass.objects.all(),
+#         "teachers": Teacher.objects.all(),
+#     }
+
+#     return render(request, "routine/edit.html", context)
+
+# @login_required
 def routine_delete(request, pk):
+
     routine = get_object_or_404(Routine, pk=pk)
 
     if request.method == "POST":
@@ -589,9 +674,10 @@ def routine_delete(request, pk):
     return render(
         request,
         "routine/routine_delete.html",
-        {"routine": routine}
+        {
+            "routine": routine,
+        }
     )
-
 
 # student admit
 @login_required
@@ -680,3 +766,96 @@ def student_register(request, pk):
         "admit/registration.html",
         {"student": student}
     )
+
+def add_marks(request, student_id):
+
+    student = Student.objects.get(id=student_id)
+
+    term = request.GET.get("term", "HY")
+
+    subjects = Subject.objects.filter(
+        student_class=student.student_class
+    )
+
+    marks = StudentMark.objects.filter(
+        student=student,
+        term=term
+    )
+
+    mark_dict = {
+        mark.subject_id: mark.obtain_mark
+        for mark in marks
+    }
+
+    # প্রতিটি Subject-এর সাথে obtain_mark যোগ করছি
+    for subject in subjects:
+        subject.obtain = mark_dict.get(subject.id, "")
+
+    if request.method == "POST":
+
+        term = request.POST.get("term")
+
+        for subject in subjects:
+
+            obtain = request.POST.get(f"mark_{subject.id}")
+
+            StudentMark.objects.update_or_create(
+                student=student,
+                subject=subject,
+                term=term,
+                defaults={
+                    "full_mark": 50,
+                    "pass_mark": 17,
+                    "obtain_mark": obtain,
+                }
+            )
+
+        messages.success(request, "Marks saved successfully.")
+        return redirect("student_admit")
+
+    return render(request, "marksheet/marksheet.html", {
+        "student": student,
+        "subjects": subjects,
+        "term": term,
+    })
+
+
+def assign_teacher(request):
+
+    classes = StudentClass.objects.all()
+    teachers = Teacher.objects.all()
+
+    if request.method == "POST":
+
+        class_ids = request.POST.getlist("student_class[]")
+        subjects = request.POST.getlist("subject[]")
+        teacher_ids = request.POST.getlist("teacher[]")
+        periods = request.POST.getlist("period[]")
+
+        for class_id, subject_name, teacher_id, period in zip(
+            class_ids,
+            subjects,
+            teacher_ids,
+            periods,
+        ):
+
+            student_class = StudentClass.objects.get(id=class_id)
+
+            subject, created = Subject.objects.get_or_create(
+                student_class=student_class,
+                name=subject_name
+            )
+
+            Routine.objects.update_or_create(
+                student_class=student_class,
+                period=period,
+                defaults={
+                    "teacher_id": teacher_id,
+                    "subject": subject,
+                }
+            )
+            
+    return render(request, "assign.html", {
+        "classes": classes,
+        "teachers": teachers,
+    })

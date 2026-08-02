@@ -194,8 +194,9 @@ class Student(models.Model):
     # ======================================================
 
     student_class = models.ForeignKey(
-        "StudentClass",
-        on_delete=models.CASCADE,
+    "StudentClass",
+    on_delete=models.PROTECT,
+    related_name="students",
     )
 
     class_roll = models.CharField(max_length=10)
@@ -327,13 +328,34 @@ class Library(models.Model):
     def __str__(self):
         return self.b_name
     
+class Subject(models.Model):
+    student_class = models.ForeignKey(
+    StudentClass,
+    on_delete=models.PROTECT,
+    related_name="subjects"
+    )
 
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.student_class.name} - {self.name}"
+
+    
 class Routine(models.Model):
     teacher = models.ForeignKey(Teacher,on_delete=models.CASCADE,related_name="routines")
 
-    student_class = models.ForeignKey(StudentClass,on_delete=models.CASCADE,related_name="routines")
+    student_class = models.ForeignKey(
+    StudentClass,
+    on_delete=models.PROTECT,
+    related_name="routines",
+    )
 
-    subject = models.CharField(max_length=100)
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        related_name="routines"
+    )
+
     period = models.PositiveIntegerField()
 
     class Meta:
@@ -341,3 +363,42 @@ class Routine(models.Model):
 
     def __str__(self):
         return f"{self.student_class.name} - Period {self.period} - {self.subject}"
+
+
+class StudentMark(models.Model):
+    TERM_CHOICES = [
+        ("HY", "Half Yearly"),
+        ("AN", "Annual"),
+    ]
+
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="marks"
+    )
+
+    subject = models.ForeignKey(
+        Subject,
+        on_delete=models.CASCADE,
+        related_name="marks"
+    )
+
+    term = models.CharField(
+        max_length=2,
+        choices=TERM_CHOICES,
+    )
+
+    full_mark = models.PositiveIntegerField(default=100)
+    pass_mark = models.PositiveIntegerField(default=33)
+    obtain_mark = models.PositiveIntegerField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["student", "subject", "term"],
+                name="unique_student_subject_term"
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.student.full_name} - {self.subject.name}"

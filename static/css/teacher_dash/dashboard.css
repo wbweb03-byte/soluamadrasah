@@ -1,0 +1,174 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+     margin:0;
+}
+
+.main{
+    display: flex;
+    flex-direction: column;
+
+}
+
+#Htitle{
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+     background: linear-gradient(
+        135deg,
+        #021a65,
+        #1d4ed8,
+        #38bdf8,
+        #021a65
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+
+    font-weight: 800;
+    font-size: 2rem;
+    font-style: italic;
+
+}
+.dashboard-container{
+    width: 100%;
+    height: 100vh;
+    background-color: aliceblue;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
+    
+   
+}
+
+.card{
+    max-width: 300px;
+    min-height: 250px;
+    padding: 10px;
+    cursor: pointer;
+     
+
+    border: 4px solid transparent;
+    border-radius: 15px;
+    background:
+        linear-gradient(white, white) padding-box,
+        linear-gradient(135deg,
+            #021a65,
+            #1d4ed8,
+            #38bdf8,
+            #021a65
+        ) border-box;
+
+    /* box-shadow: 0 0 10px #2563eb,
+                0 0 20px #3b82f6,
+                0 0 40px #60a5fa; */
+                
+    box-shadow:
+    0 0 10px rgba(37, 99, 235, 0.5),
+    0 0 20px rgba(37, 99, 235, 0.35),
+    0 0 40px rgba(37, 99, 235, 0.2);
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    align-items: center;
+    overflow: hidden;
+    z-index: 1;
+    transition: transform .5s ease, box-shadow .5s ease;
+
+}
+
+.card::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(135deg,#021a65,#1d4ed8,#38bdf8);
+
+    opacity: 0;
+    transition: opacity .5s ease;
+
+    z-index: -1;
+    border-radius: 10px;
+}
+
+.card:hover::before{
+    opacity: 1;
+}
+
+.card:hover{
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(2,26,101,.35);
+}
+
+.card:hover .title,
+.card:hover p{
+    color: white;
+}
+
+
+
+
+
+.title{
+    color: #021a65;
+    padding: 10px 0;
+    font-weight: 900;
+    text-align: center;
+}
+
+.card p{
+    
+    text-align: center;
+    font-style: italic;
+    
+}
+
+button{
+    padding: 10px;
+    border: none;
+    border-radius: 7px;
+    background-color: #002589;
+    color: white;
+
+    position: absolute;
+    bottom: 30px;
+
+    transition: 0.2s;
+    cursor: pointer;
+
+
+}
+
+button:active{
+    transform: scale(0.90);
+    
+}
+
+button:hover{
+
+    background-color: #0336c3;
+    
+
+}
+
+
+
+@media (max-width:768px) {
+    .dashboard-container{
+        flex-direction: column;
+        margin: 10px;
+        height: auto;
+    }
+    
+}

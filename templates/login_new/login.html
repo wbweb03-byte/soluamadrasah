@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login page</title>
+    <link rel="stylesheet" href="{% static 'css/login_new/login.css'%}">
+</head>
+<body>
+    <div class="main">
+        <div class="card">
+            <div class="title">
+                LOGIN PAGE
+            </div>
+                <div ID="user_type">
+                    <form method="post">
+                            {% csrf_token %}
+
+                            <div id="radio">
+                                <label>
+                                    <input type="radio" name="user_type" value="student" checked>
+                                    Student
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="user_type" value="teacher">
+                                    Teacher
+                                </label>
+
+                                <label>
+                                    <input type="radio" name="user_type" value="admin">
+                                    Admin
+                                </label>
+                            </div>
+
+                            <input
+                                class="inputs"
+                                id="username"
+                                name="username"
+                                type="text"
+                                placeholder="Registration No"
+                            >
+
+                            <input
+                                class="inputs"
+                                id="password"
+                                name="password"
+                                type="date"
+                            >
+
+                            <button type="submit" id="login-button">
+                                Login
+                            </button>
+                        </form>
+                                            
+                </div>
+        </div>
+    </div>
+ 
+    <script>
+        const radios = document.querySelectorAll('input[name="user_type"]');
+
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+
+        function updateForm() {
+
+            const selected = document.querySelector(
+                'input[name="user_type"]:checked'
+            ).value;
+
+            if (selected === "student") {
+
+                username.placeholder = "Registration No";
+                username.value = "";
+
+                password.type = "date";
+                password.name = "date_of_birth";
+                password.value = "";
+
+            }
+
+            else if (selected === "teacher") {
+
+                username.placeholder = "Enter your name";
+                username.value = "";
+
+                password.placeholder = "Enter your contact number";
+                password.type = "tel";
+                password.name = "contact";
+                password.value = "";
+
+            }
+
+            else {
+
+                username.placeholder = "Username";
+                username.value = "";
+
+                password.type = "password";
+                password.name = "password";
+                password.placeholder = "Password";
+                password.value = "";
+
+            }
+
+        }
+
+        radios.forEach(radio => {
+            radio.addEventListener("change", updateForm);
+        });
+
+        updateForm();
+    </script>
+</body>
+</html>

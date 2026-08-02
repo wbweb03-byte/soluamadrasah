@@ -1,0 +1,160 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+body{
+    height: 100vh;
+    background-color: #0B1849;
+}
+.main{
+    width: 100%;
+    height: 100vh;
+    background-color:rgb(250, 249, 246);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    
+
+}
+
+
+.card{
+    width: 400px;
+    min-height: 450px;
+
+    padding: 20px;
+
+    background: rgba(255, 255, 255, 0.15);
+    
+
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+
+    box-shadow: 0 8px 32px rgba(0,0,0,.2);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    /* Dark background হলে white text ভালো দেখায় */
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    position: relative;
+}
+
+.title{
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#user_type{
+    font-size: 1rem;
+    color: #1b0f2c;
+   
+}
+
+input:hover{
+    cursor: pointer;
+}
+
+#radio{
+    margin: 10px;
+}
+
+.inputs{
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+
+    font-size: 16px;
+    color: #333;
+
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-bottom: 1px solid rgba(1, 0, 0, 0.4);
+    border-radius: 10px;
+
+    outline: none;
+    transition: all .3s ease;
+    backdrop-filter: blur(5px);
+}
+
+input::placeholder{
+    color: rgba(91, 31, 31, 0.8);
+}
+
+input:focus{
+    border-color: #4CAF50;
+    box-shadow: 0 0 8px rgba(76,175,80,.4);
+    background: rgba(255,255,255,0.3);
+    
+}
+
+input:disabled{
+    background: #e9ecef;
+    cursor: not-allowed;
+}
+
+input:invalid{
+    border-color: red;
+}
+
+input::placeholder{
+     color: #ccc;
+    transition: opacity .3s ease;
+}
+
+input:focus::placeholder{
+    opacity: 0;
+}
+
+
+
+#login-button{
+    background-color:#007DCC;
+    color: white;
+    padding: 10px;
+    border-radius: 7px;
+    border-style: none;
+    transition:0.2s ;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    /* transform: translateX(-50%); */
+
+    
+}
+
+
+#login-button:active{
+
+    background-color: #0B1849;
+    transform: translateX(-50%) scale(0.95);
+}
+
+
+
+/* .card{
+    width: 400px;
+    padding: 40px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.2); 
+}*/
+

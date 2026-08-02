@@ -1,0 +1,73 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base</title>
+    <link rel="stylesheet" href="{% static 'css/student_base/base.css'%}">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    {% block extra_css %}
+{% endblock %}
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            
+            <div class="logo">
+                <img src="madrasah_logo.jpeg" alt="">
+                <h2>Madrasah ERP</h2>
+            </div>
+
+            <ul>
+                <li>HOME</li>
+                <li>CONTACT</li>
+                <li><i class="fa-solid fa-right-from-bracket"></i>
+                Logout</li>
+            </ul>
+        </nav>
+
+        
+
+        <main class="main"> {% block content %}
+    {% endblock %}</main>
+
+        <footer class="footer">
+
+            <div class="footer-col">
+                <h3>Madrasah ERP</h3>
+                <p>Student Management System</p>
+                <p>Version 1.0.0</p>
+            </div>
+
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <a href="#">Dashboard</a>
+                <a href="#">Students</a>
+                <a href="#">Teachers</a>
+                <a href="#">Settings</a>
+            </div>
+
+            <div class="footer-col">
+                <h3>Connect</h3>
+
+                <div class="social">
+                    <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+
+                    <a href="#"><i class="fa-brands fa-github"></i></a>
+
+                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+
+                    <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                </div>
+
+                <p>© 2026 All Rights Reserved</p>
+            </div>
+
+        </footer>
+    </div>
+</body>
+</html>
