@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404
 from django.forms import modelformset_factory
 from django.contrib import messages
 from .forms import( 
@@ -859,3 +860,73 @@ def assign_teacher(request):
         "classes": classes,
         "teachers": teachers,
     })
+
+
+
+def student_id_card(request, student_id):
+
+    student = get_object_or_404(
+        Student.objects.select_related("student_class"),
+        pk=student_id
+    )
+
+    context = {
+        "student": student,
+    }
+
+    return render(
+        request,
+        "id_card/card_design_2.html",
+        context
+    )
+
+
+
+def bulk_student_id_cards(request):
+
+    classes = StudentClass.objects.all().order_by("id")
+
+    class_id = request.GET.get("class_id", "").strip()
+
+    selected_class = None
+    students = []
+    pages = []
+
+    if class_id:
+
+        if not class_id.isdecimal():
+            raise Http404("Invalid Class ID")
+
+        selected_class = get_object_or_404(
+            StudentClass,
+            pk=int(class_id)
+        )
+
+        students = list(
+            Student.objects.filter(
+                student_class=selected_class
+            )
+            .select_related("student_class")
+            .order_by("class_roll", "full_name")
+        )
+
+        # 8 Cards Per A4 Page
+        cards_per_page = 8
+
+        pages = [
+            students[i:i + cards_per_page]
+            for i in range(0, len(students), cards_per_page)
+        ]
+
+    context = {
+        "classes": classes,
+        "selected_class": selected_class,
+        "pages": pages,
+        "total_students": len(students),
+    }
+
+    return render(
+        request,
+        "id_card/bulk_print.html",
+        context
+    )

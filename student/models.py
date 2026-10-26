@@ -1,6 +1,7 @@
 from django.db import models
 
 from django.core.validators import RegexValidator
+from django.utils import timezone
 
 # Create your models here.
 
@@ -402,3 +403,43 @@ class StudentMark(models.Model):
 
     def __str__(self):
         return f"{self.student.full_name} - {self.subject.name}"
+
+
+
+    
+class StudentIDCard(models.Model):
+
+    student = models.OneToOneField(
+        "Student",
+        on_delete=models.CASCADE,
+        related_name="id_card"
+    )
+
+    issue_date = models.DateField(
+        default=timezone.localdate
+    )
+
+    valid_until = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    is_active = models.BooleanField(
+        default=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return self.student.full_name
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Student ID Card"
+        verbose_name_plural = "Student ID Cards"

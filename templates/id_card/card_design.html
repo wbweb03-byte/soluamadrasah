@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madrasah Student ID Card</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+.id-card {
+  width: 3.4in;
+  height: 2.2in;
+  background: white;
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px #0002;
+}
+
+.header {
+  background: #075547;
+  color: white;
+  text-align: center;
+  padding: 7px 4px;
+  height: 60px;
+}
+
+.header h2 {
+  font-size: 13px;
+  margin: 0 0 4px;
+}
+
+.header p {
+  font-size: 7px;
+  margin: 3px 0;
+}
+
+.card-title {
+  color: #075547;
+  text-align: center;
+  font-size: 10px;
+  font-weight: bold;
+  margin: 7px 0 5px;
+}
+
+.content {
+  display: flex;
+  gap: 9px;
+  padding: 0 9px;
+}
+
+.photo {
+  width: 72px;
+  height: 86px;
+  border: 2px solid #075547;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.details {
+  flex: 1;
+  min-width: 0;
+}
+
+.details p {
+  font-size: 8px;
+  line-height: 1.25;
+  margin: 0 0 3px;
+  overflow-wrap: anywhere;
+}
+
+.details b {
+  color: #075547;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 20px;
+  background: #075547;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 8px;
+}
+
+@media print {
+  @page {
+    size: 3.4in 2.2in;
+    margin: 0;
+  }
+
+  body {
+    display: block;
+    min-height: auto;
+    background: white;
+  }
+
+  .id-card {
+    border-radius: 0;
+    box-shadow: none;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="id-card">
+
+  <div class="header">
+    <h2>SOLUA MADRASAH DARUL QURAN</h2>
+    <p>
+      Salua, BaruiPara, HariharPara,
+      MSD, WB - 742165
+    </p>
+    <p>
+      ESTD - 1977 |
+      REG. No - S/1l/59812
+    </p>
+  </div>
+
+  <div class="card-title">
+    STUDENT IDENTITY CARD
+  </div>
+
+  <div class="content">
+
+    <img
+      src="student.jpg"
+      alt="Student Photo"
+      class="photo"
+    >
+
+    <div class="details">
+      <p><b>Name:</b> Rahim Ahmed</p>
+      <p><b>Father:</b> Abdul Karim</p>
+      <p><b>DOB:</b> 15/08/2012</p>
+      <p><b>Class:</b> VIII</p>
+      <p><b>Roll No:</b> 12</p>
+      <p><b>Mobile:</b> 98765XXXXX</p>
+      <p><b>Address:</b> Salua, MSD</p>
+      <p><b>Blood Group:</b> O+</p>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span> </span>
+    <span>Authorized Signature</span>
+  </div>
+
+</div>
+
+</body>
+</html>

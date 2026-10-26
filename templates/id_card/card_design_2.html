@@ -1,0 +1,331 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ student.full_name }} - Student ID Card</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+/* ID CARD */
+.id-card {
+    width: 3.4in;
+    height: 2.2in;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px #0002;
+    flex-shrink: 0;
+}
+
+/* LOGO WATERMARK */
+.watermark {
+    position: absolute;
+    width: 135px;
+    height: 135px;
+    object-fit: contain;
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.10;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.header,
+.card-title,
+.content,
+.footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* HEADER */
+.header {
+    background: #075547;
+    color: white;
+    text-align: center;
+    padding: 7px 4px;
+    height: 60px;
+}
+
+.header h2 {
+    font-size: 13px;
+    margin: 0 0 4px;
+}
+
+.header p {
+    font-size: 7px;
+    margin: 3px 0;
+}
+
+/* TITLE */
+.card-title {
+    color: #075547;
+    text-align: center;
+    font-size: 10px;
+    font-weight: bold;
+    margin: 7px 0 5px;
+}
+
+/* CONTENT */
+.content {
+    display: flex;
+    gap: 9px;
+    padding: 0 9px;
+}
+
+/* STUDENT PHOTO */
+.photo {
+    width: 72px;
+    height: 86px;
+    border: 2px solid #075547;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.no-photo {
+    width: 72px;
+    height: 86px;
+    border: 2px solid #075547;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+    font-size: 9px;
+    flex-shrink: 0;
+}
+
+/* STUDENT DETAILS */
+.details {
+    flex: 1;
+    min-width: 0;
+}
+
+.details p {
+    font-size: 8px;
+    line-height: 1.25;
+    margin: 0 0 3px;
+    overflow-wrap: anywhere;
+}
+
+.details b {
+    color: #075547;
+}
+
+/* FOOTER */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    background: #075547;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    font-size: 8px;
+    z-index: 2;
+}
+
+/* PRINT BUTTON */
+.print-btn {
+    margin-top: 20px;
+    padding: 12px 26px;
+    background: #075547;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.print-btn:hover {
+    background: #043e34;
+}
+
+/* PRINT SETTINGS */
+@media print {
+
+    @page {
+        size: 3.5in 2.2in;
+        margin: 0;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 3.5in;
+        height: 2.2in;
+        min-height: 0;
+        display: block;
+        background: white;
+    }
+
+    .id-card {
+        width: 3.5in;
+        height: 2.2in;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .print-btn {
+        display: none;
+    }
+
+    .id-card,
+    .header,
+    .footer,
+    .watermark {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="id-card">
+
+    <!-- INSTITUTION HEADER -->
+    <div class="header">
+        <h2>SOLUA MADRASAH DARUL QURAN</h2>
+
+        <p>
+            Salua, BaruiPara, HariharPara,
+            MSD, WB - 742165
+        </p>
+
+        <p>
+            ESTD - 1977 |
+            REG. No - S/1l/59812
+        </p>
+    </div>
+
+    <!-- LOGO WATERMARK -->
+    <img
+        src="{% static 'src/madrasah_logo.jpeg' %}"
+        alt=""
+        class="watermark"
+    >
+
+    <!-- CARD TITLE -->
+    <div class="card-title">
+        STUDENT IDENTITY CARD
+    </div>
+
+    <div class="content">
+
+        <!-- STUDENT PHOTO -->
+        {% if student.img %}
+
+        <img
+            src="{{ student.img.url }}"
+            alt="Student Photo"
+            class="photo"
+        >
+
+        {% else %}
+
+        <div class="no-photo">
+            No Photo
+        </div>
+
+        {% endif %}
+
+        <!-- STUDENT DETAILS -->
+        <div class="details">
+
+            <p>
+                <b>Name:</b>
+                {{ student.full_name }}
+            </p>
+
+            <p>
+                <b>Father:</b>
+                {{ student.father_name }}
+            </p>
+
+            <p>
+                <b>DOB:</b>
+                {{ student.date_of_birth|date:"d/m/Y" }}
+            </p>
+
+            <p>
+                <b>Class:</b>
+                {{ student.student_class }}
+            </p>
+
+            <p>
+                <b>Roll No:</b>
+                {{ student.class_roll }}
+            </p>
+
+            <p>
+                <b>Mobile:</b>
+                {{ student.contact|default:"N/A" }}
+            </p>
+
+            <p>
+                <b>Address:</b>
+                {{ student.village }},
+                {{ student.district }}
+            </p>
+
+            <p>
+                <b>Blood Group:</b>
+                {{ student.blood_group|default:"N/A" }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+
+        <span></span>
+
+        <span>
+            Authorized Signature
+        </span>
+
+    </div>
+
+</div>
+
+<!-- PRINT BUTTON -->
+<button
+    class="print-btn"
+    type="button"
+    onclick="window.print()"
+>
+    Print ID Card
+</button>
+
+</body>
+</html>

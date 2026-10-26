@@ -81,7 +81,9 @@
 
         <div class="buttons">
 
-            <button class="blue">Print ID</button>
+           <a href="{% url 'bulk_student_id_cards' %}" target="_blank">
+        <button type="button" class="blue">Print ID</button>
+            </a>
             <button class="green">Report</button>
 
             <button type="submit" class="orange">Admit</button>
@@ -145,7 +147,11 @@
 
                     <div class="buttons">
 
-            <button class="blue">Print ID</button>
+           <a href="{% url 'student_id_card' student.id %}"
+            target="_blank"
+            class="blue">
+             Print ID
+                </a>
 
            <a href="{% url 'mark_add' student.id %} "> <button class="green">Report</button></a>
 
@@ -164,9 +170,7 @@
 
             
             </tbody>
-             <button  type="submit" class="buttons">
-        Print Selected Admit Card
-    </button>
+             
 
         </form>
 
